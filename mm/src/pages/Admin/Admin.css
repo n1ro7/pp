@@ -1,0 +1,223 @@
+/* 管理员页面样式 */
+.admin-page {
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 80px);
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h2 {
+  margin-bottom: 8px;
+  color: #1890ff;
+}
+
+.admin-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+}
+
+.users-section, .settings-section, .logs-section {
+  padding: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.section-header h3 {
+  margin: 0;
+  color: #262626;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* 搜索区域样式 */
+.search-section {
+  margin-bottom: 20px;
+}
+
+.search-card {
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.search-card .ant-form-inline .ant-form-item {
+  margin-bottom: 10px;
+}
+
+/* 表格样式 */
+.users-table,
+.logs-table {
+  margin-top: 16px;
+}
+
+.status-active {
+  color: #52c41a;
+  font-weight: 500;
+}
+
+.status-inactive {
+  color: #ff4d4f;
+  font-weight: 500;
+}
+
+/* 设置表单样式 */
+.settings-form {
+  margin-top: 24px;
+  max-width: 100%;
+}
+
+.settings-form .ant-form-item {
+  margin-bottom: 24px;
+}
+
+.settings-group {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.settings-group:last-child {
+  border-bottom: none;
+  margin-bottom: 16px;
+  padding-bottom: 0;
+}
+
+.settings-group h4 {
+  margin-bottom: 16px;
+  color: #1890ff;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .admin-page {
+    padding: 16px;
+  }
+  
+  .users-section, .settings-section, .logs-section {
+    padding: 16px;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .section-header h3 {
+    font-size: 16px;
+  }
+  
+  .section-header .ant-btn {
+    margin-top: 8px;
+  }
+  
+  .settings-form .ant-row {
+    display: block;
+  }
+  
+  .settings-form .ant-col {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  .search-card .ant-form-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-card .ant-form-inline .ant-form-item {
+    margin-bottom: 16px;
+  }
+}
+
+/* 标签页样式 */
+.ant-tabs-tab {
+  font-size: 16px;
+  padding: 12px 24px;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #1890ff;
+  font-weight: 500;
+}
+
+.ant-tabs-ink-bar {
+  background-color: #1890ff;
+  height: 3px;
+}
+
+/* 表格样式增强 */
+.ant-table-tbody > tr:hover > td {
+  background-color: #fafafa;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #fafafa;
+  font-weight: 500;
+  color: #262626;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 按钮样式增强 */
+.ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.ant-btn-primary:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.ant-btn-danger {
+  color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.ant-btn-danger:hover {
+  color: #ff7875;
+  border-color: #ff7875;
+}
+
+/* 模态框样式 */
+.ant-modal-header {
+  background-color: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.ant-modal-title {
+  font-size: 18px;
+  color: #262626;
+}
+
+/* 表单样式增强 */
+.ant-form-item-label > label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #262626;
+}
+
+.ant-input:hover,
+.ant-select:hover .ant-select-selector,
+.ant-input:focus,
+.ant-select-focused .ant-select-selector {
+  border-color: #40a9ff;
+}
+
+/* 加载动画样式 */
+.ant-spin {
+  margin: 40px 0;
+}

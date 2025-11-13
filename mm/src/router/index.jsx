@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { logout } from "../services/authService";
 import { Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
 import { Layout, Menu, Avatar, Badge, Dropdown } from 'antd';
 import {
@@ -10,12 +11,16 @@ import {
   SettingOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
-  MenuUnfoldOutlined
+  MenuUnfoldOutlined,
+  TeamOutlined
 } from '@ant-design/icons';
 import Dashboard from '../pages/Dashboard/Dashboard';
 import AssetHoldings from '../pages/AssetHoldings/AssetHoldings';
 import MessageList from '../pages/MessageList/MessageList';
 import ReportList from '../pages/ReportList/ReportList';
+import Login from '../pages/Login/Login';
+import AuthGuard from '../components/AuthGuard/AuthGuard';
+import Admin from '../pages/Admin/Admin';
 
 const { Header, Sider, Content } = Layout;
 
@@ -33,7 +38,16 @@ const MainLayout = () => {
       <Menu.Item key="profile" icon={<UserOutlined />}>个人资料</Menu.Item>
       <Menu.Item key="settings" icon={<SettingOutlined />}>系统设置</Menu.Item>
       <Menu.Divider />
-      <Menu.Item key="logout" icon={<LogoutOutlined />}>退出登录</Menu.Item>
+      <Menu.Item 
+        key="logout" 
+        icon={<LogoutOutlined />}
+        onClick={() => {
+          logout();
+          window.location.href = '/login';
+        }}
+      >
+        退出登录
+      </Menu.Item>
     </Menu>
   );
   
@@ -143,7 +157,19 @@ const MainLayout = () => {
                 marginBottom: '4px',
                 borderRadius: 'var(--border-radius)'
               }
-            }
+            },
+            // 仅管理员可见的菜单
+            ...(((JSON.parse(localStorage.getItem('user')) || {}).role === 'admin') ? [{
+              key: 'admin',
+              icon: <TeamOutlined />,
+              label: '系统管理',
+              onClick: () => window.location.href = '/admin',
+              style: {
+                marginBottom: '4px',
+                borderRadius: 'var(--border-radius)'
+              },
+              className: 'admin-menu-item'
+            }] : [])
           ]}
         />
       </Sider>
@@ -203,17 +229,29 @@ const MainLayout = () => {
 const AppRouter = () => {
   return (
     <Routes>
-      {/* 所有页面都使用全局布局 */}
-      <Route path="/" element={<MainLayout />}>
-        {/* 默认重定向到系统概览页 */}
-        <Route index element={<Navigate to="/dashboard" />} />
-        {/* 前端开发A负责页面 */}
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="asset-holdings" element={<AssetHoldings />} />
-        {/* 前端开发B负责页面 */}
-        <Route path="message-list" element={<MessageList />} />
-        <Route path="report-list" element={<ReportList />} />
+      {/* 根路径默认重定向到登录页面 */}
+      <Route index element={<Navigate to="/login" />} />
+      
+      {/* 登录页面，不需要认证 */}
+      <Route path="/login" element={<Login />} />
+      
+      {/* 使用AuthGuard保护需要登录的页面 */}
+      <Route element={<AuthGuard />}>
+        {/* 所有需要认证的页面都使用全局布局 */}
+        <Route path="/" element={<MainLayout />}>
+          {/* 默认重定向到系统概览页 */}
+          <Route index element={<Navigate to="/dashboard" />} />
+          {/* 前端开发A负责页面 */}
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="asset-holdings" element={<AssetHoldings />} />
+          {/* 前端开发B负责页面 */}
+          <Route path="message-list" element={<MessageList />} />
+          <Route path="report-list" element={<ReportList />} />
+          {/* 管理员页面 */}
+          <Route path="admin" element={<Admin />} />
+        </Route>
       </Route>
+      
       {/* 404页面 */}
       <Route path="*" element={<div style={{ textAlign: 'center', padding: '50px' }}>404 页面不存在</div>} />
     </Routes>

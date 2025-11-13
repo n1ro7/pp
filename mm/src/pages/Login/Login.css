@@ -1,0 +1,110 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.login-form-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.login-form-wrapper:hover {
+  transform: translateY(-5px);
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-logo h1 {
+  margin: 0 0 10px;
+  color: #1890ff;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.login-logo p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.login-form {
+  width: 100%;
+}
+
+.login-input {
+  height: 40px;
+  border-radius: 6px;
+}
+
+.login-form-forgot {
+  float: right;
+  color: #1890ff;
+  transition: color 0.3s;
+}
+
+.login-form-forgot:hover {
+  color: #40a9ff;
+}
+
+.login-form-button {
+  height: 40px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 6px;
+  background: #1890ff;
+  border: none;
+  transition: all 0.3s;
+}
+
+.login-form-button:hover,
+.login-form-button:focus {
+  background: #40a9ff;
+  transform: translateY(-1px);
+}
+
+.login-form-button:active {
+  transform: translateY(0);
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .login-form-wrapper {
+    padding: 30px 20px;
+  }
+  
+  .login-logo h1 {
+    font-size: 20px;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-form-wrapper {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.site-form-item-icon {
+  color: rgba(0, 0, 0, 0.25);
+}

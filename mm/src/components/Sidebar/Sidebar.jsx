@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { t } from '../../utils/i18n';
 
 const Sidebar = () => {
   return (
@@ -7,12 +8,12 @@ const Sidebar = () => {
       <ul className="nav-menu">
         <li className="nav-item">
           <NavLink to="/" className="nav-link" end>
-            系统概览
+            {t('systemOverview')}
           </NavLink>
         </li>
         <li className="nav-item">
           <NavLink to="/asset-holdings" className="nav-link">
-            持仓数据
+            {t('assetHoldings')}
           </NavLink>
         </li>
       </ul>

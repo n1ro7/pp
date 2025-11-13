@@ -1,0 +1,195 @@
+// 简单的国际化工具
+
+// 语言包定义
+const translations = {
+  'zh-CN': {
+    // 系统管理页面
+    'systemManagement': '系统管理',
+    'manageUsersSettings': '管理用户账户和系统设置',
+    'userManagement': '用户管理',
+    'operationLogs': '操作日志',
+    'systemSettings': '系统设置',
+    'userList': '用户列表',
+    'addUser': '添加用户',
+    'search': '搜索',
+    'reset': '重置',
+    'refresh': '刷新',
+    'username': '用户名',
+    'name': '姓名',
+    'email': '邮箱',
+    'role': '角色',
+    'status': '状态',
+    'createdAt': '创建时间',
+    'action': '操作',
+    'edit': '编辑',
+    'resetPassword': '重置密码',
+    'delete': '删除',
+    'admin': '管理员',
+    'user': '普通用户',
+    'active': '启用',
+    'inactive': '禁用',
+    'systemOperationLogs': '系统操作日志',
+    'operator': '操作人',
+    'target': '操作对象',
+    'time': '操作时间',
+    'ip': 'IP地址',
+    'details': '详情',
+    'viewDetails': '查看详情',
+    'systemConfiguration': '系统配置',
+    'basicSettings': '基础设置',
+    'systemName': '系统名称',
+    'systemTheme': '系统主题',
+    'defaultLanguage': '默认语言',
+    'maxUploadSize': '最大上传文件大小(MB)',
+    'securitySettings': '安全设置',
+    'apiTimeout': 'API超时设置（毫秒）',
+    'autoLogoutTime': '自动登出时间（分钟）',
+    'autoLogoutEnabled': '自动登出设置',
+    'passwordComplexityEnabled': '密码复杂度要求',
+    'notificationSettings': '通知设置',
+    'systemNotification': '系统通知',
+    'emailNotification': '邮件通知',
+    'smsNotification': '短信通知',
+    'logEnabled': '操作日志记录',
+    'advancedSettings': '高级设置',
+    'dataRefreshInterval': '数据刷新间隔（秒）',
+    'cacheTime': '缓存时间（分钟）',
+    'saveSettings': '保存设置',
+    'addUserTitle': '添加用户',
+    'editUserTitle': '编辑用户',
+    'resetPasswordTitle': '重置密码',
+    'newPassword': '新密码',
+    'confirmPassword': '确认密码',
+    'deleteUserConfirm': '确定要删除这个用户吗？',
+    'deleteUserContent': '删除后数据将无法恢复',
+    'deleteUserSuccess': '删除用户成功',
+    'deleteUserFailed': '删除用户失败',
+    'addUserSuccess': '添加用户成功',
+    'addUserFailed': '添加用户失败',
+    'updateUserSuccess': '更新用户成功',
+    'updateUserFailed': '更新用户失败',
+    'resetPasswordSuccess': '密码重置成功',
+    'resetPasswordFailed': '密码重置失败',
+    'settingsSavedSuccess': '设置保存成功',
+    'settingsSavedFailed': '保存失败，请重试',
+    'fetchUsersFailed': '获取用户列表失败',
+    'fetchLogsFailed': '获取操作日志失败',
+    'fetchSettingsFailed': '获取系统设置失败',
+    'lightTheme': '浅色主题',
+    'darkTheme': '深色主题',
+    'autoTheme': '跟随系统',
+    'chinese': '简体中文',
+    'english': 'English',
+    'welcomeAdmin': '欢迎，管理员',
+    'systemOverview': '系统概览',
+    'assetHoldings': '持仓数据'
+  },
+  'en-US': {
+    // System Management Page
+    'systemManagement': 'System Management',
+    'manageUsersSettings': 'Manage user accounts and system settings',
+    'userManagement': 'User Management',
+    'operationLogs': 'Operation Logs',
+    'systemSettings': 'System Settings',
+    'userList': 'User List',
+    'addUser': 'Add User',
+    'search': 'Search',
+    'reset': 'Reset',
+    'refresh': 'Refresh',
+    'username': 'Username',
+    'name': 'Name',
+    'email': 'Email',
+    'role': 'Role',
+    'status': 'Status',
+    'createdAt': 'Created At',
+    'action': 'Action',
+    'edit': 'Edit',
+    'resetPassword': 'Reset Password',
+    'delete': 'Delete',
+    'admin': 'Admin',
+    'user': 'User',
+    'active': 'Active',
+    'inactive': 'Inactive',
+    'systemOperationLogs': 'System Operation Logs',
+    'operator': 'Operator',
+    'target': 'Target',
+    'time': 'Time',
+    'ip': 'IP Address',
+    'details': 'Details',
+    'viewDetails': 'View Details',
+    'systemConfiguration': 'System Configuration',
+    'basicSettings': 'Basic Settings',
+    'systemName': 'System Name',
+    'systemTheme': 'System Theme',
+    'defaultLanguage': 'Default Language',
+    'maxUploadSize': 'Max Upload Size(MB)',
+    'securitySettings': 'Security Settings',
+    'apiTimeout': 'API Timeout (ms)',
+    'autoLogoutTime': 'Auto Logout Time (min)',
+    'autoLogoutEnabled': 'Auto Logout',
+    'passwordComplexityEnabled': 'Password Complexity',
+    'notificationSettings': 'Notification Settings',
+    'systemNotification': 'System Notification',
+    'emailNotification': 'Email Notification',
+    'smsNotification': 'SMS Notification',
+    'logEnabled': 'Operation Logging',
+    'advancedSettings': 'Advanced Settings',
+    'dataRefreshInterval': 'Data Refresh Interval (sec)',
+    'cacheTime': 'Cache Time (min)',
+    'saveSettings': 'Save Settings',
+    'addUserTitle': 'Add User',
+    'editUserTitle': 'Edit User',
+    'resetPasswordTitle': 'Reset Password',
+    'newPassword': 'New Password',
+    'confirmPassword': 'Confirm Password',
+    'deleteUserConfirm': 'Are you sure to delete this user?',
+    'deleteUserContent': 'Data cannot be recovered after deletion',
+    'deleteUserSuccess': 'User deleted successfully',
+    'deleteUserFailed': 'Failed to delete user',
+    'addUserSuccess': 'User added successfully',
+    'addUserFailed': 'Failed to add user',
+    'updateUserSuccess': 'User updated successfully',
+    'updateUserFailed': 'Failed to update user',
+    'resetPasswordSuccess': 'Password reset successfully',
+    'resetPasswordFailed': 'Failed to reset password',
+    'settingsSavedSuccess': 'Settings saved successfully',
+    'settingsSavedFailed': 'Failed to save, please try again',
+    'fetchUsersFailed': 'Failed to fetch user list',
+    'fetchLogsFailed': 'Failed to fetch operation logs',
+    'fetchSettingsFailed': 'Failed to fetch system settings',
+    'lightTheme': 'Light Theme',
+    'darkTheme': 'Dark Theme',
+    'autoTheme': 'Follow System',
+    'chinese': '简体中文',
+    'english': 'English',
+    'welcomeAdmin': 'Welcome, Admin',
+    'systemOverview': 'System Overview',
+    'assetHoldings': 'Asset Holdings'
+  }
+};
+
+// 获取当前语言
+export const getCurrentLanguage = () => {
+  // 优先从localStorage获取，确保用户偏好被正确应用
+  const savedLanguage = localStorage.getItem('appLanguage');
+  return savedLanguage || 'zh-CN';
+};
+
+// 设置当前语言
+export const setCurrentLanguage = (language) => {
+  // 确保只有有效的语言选项才能被保存
+  if (translationsData[language]) {
+    localStorage.setItem('appLanguage', language);
+  }
+};
+
+// 翻译函数
+export const t = (key, language = getCurrentLanguage()) => {
+  // 使用正确的变量名translationsData
+  const lang = translationsData[language] || translationsData['zh-CN'];
+  // 如果翻译不存在，返回key作为后备
+  return lang[key] !== undefined ? lang[key] : key;
+};
+
+// 导出语言包
+export const translationsData = translations;

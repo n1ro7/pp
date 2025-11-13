@@ -27,9 +27,16 @@ request.interceptors.request.use(
         });
       }
     }
-    // 可在此添加token（如用户登录后）
-    // const token = localStorage.getItem('token');
-    // if (token) config.headers.Authorization = `Bearer ${token}`;
+    // 添加token认证
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      // 如果没有token且不是登录请求，跳转到登录页面
+      if (!config.url.includes('/login')) {
+        window.location.href = '/login';
+      }
+    }
     return config;
   },
   (error) => {
