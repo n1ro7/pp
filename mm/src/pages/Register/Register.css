@@ -1,4 +1,4 @@
-.login-container {
+.register-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -7,7 +7,7 @@
   padding: 20px;
 }
 
-.login-form-wrapper {
+.register-form-wrapper {
   background: white;
   border-radius: 12px;
   padding: 40px;
@@ -17,48 +17,38 @@
   transition: transform 0.3s ease;
 }
 
-.login-form-wrapper:hover {
+.register-form-wrapper:hover {
   transform: translateY(-5px);
 }
 
-.login-logo {
+.register-logo {
   text-align: center;
   margin-bottom: 30px;
 }
 
-.login-logo h1 {
+.register-logo h1 {
   margin: 0 0 10px;
   color: #1890ff;
   font-size: 24px;
   font-weight: 600;
 }
 
-.login-logo p {
+.register-logo p {
   margin: 0;
   color: #666;
   font-size: 14px;
 }
 
-.login-form {
+.register-form {
   width: 100%;
 }
 
-.login-input {
+.register-input {
   height: 40px;
   border-radius: 6px;
 }
 
-.login-form-forgot {
-  float: right;
-  color: #1890ff;
-  transition: color 0.3s;
-}
-
-.login-form-forgot:hover {
-  color: #40a9ff;
-}
-
-.login-form-button {
+.register-form-button {
   height: 40px;
   font-size: 16px;
   font-weight: 500;
@@ -68,18 +58,18 @@
   transition: all 0.3s;
 }
 
-.login-form-button:hover,
-.login-form-button:focus {
+.register-form-button:hover,
+.register-form-button:focus {
   background: #40a9ff;
   transform: translateY(-1px);
 }
 
-.login-form-button:active {
+.register-form-button:active {
   transform: translateY(0);
 }
 
-/* 注册按钮样式 */
-.login-register-button {
+/* 返回登录按钮样式 */
+.register-back-button {
   height: 40px;
   font-size: 16px;
   font-weight: 500;
@@ -89,11 +79,11 @@
 
 /* 响应式设计 */
 @media (max-width: 480px) {
-  .login-form-wrapper {
+  .register-form-wrapper {
     padding: 30px 20px;
   }
   
-  .login-logo h1 {
+  .register-logo h1 {
     font-size: 20px;
   }
 }
@@ -110,7 +100,7 @@
   }
 }
 
-.login-form-wrapper {
+.register-form-wrapper {
   animation: fadeIn 0.5s ease-out;
 }
 

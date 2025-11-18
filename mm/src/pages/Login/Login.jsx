@@ -77,9 +77,17 @@ const Login = () => {
               htmlType="submit"
               className="login-form-button"
               loading={loading}
-              style={{ width: '100%' }}
+              style={{ width: '100%', marginBottom: '12px' }}
             >
               登录
+            </Button>
+            <Button
+              type="default"
+              className="login-register-button"
+              onClick={() => window.location.href = '/register'}
+              style={{ width: '100%' }}
+            >
+              注册
             </Button>
           </Form.Item>
         </Form>

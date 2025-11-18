@@ -1,23 +1,24 @@
 import request from './request';
 
+// 使用可变的模拟用户数据，使其支持删除操作
+let mockUsers = [
+  { 
+    id: 1, username: 'admin', name: '管理员', role: 'admin', email: 'admin@example.com', status: 'active', createdAt: '2024-01-01 10:00:00' 
+  },
+];
+
 // 获取用户列表（支持搜索和分页）
 export const getUsers = async (params = {}) => {
   try {
     // 模拟API响应
     return new Promise((resolve) => {
       setTimeout(() => {
-        let mockUsers = [
-          { id: 1, username: 'admin', name: '管理员', role: 'admin', email: 'admin@example.com', status: 'active', createdAt: '2024-01-01 10:00:00' },
-          { id: 2, username: 'user1', name: '用户一', role: 'user', email: 'user1@example.com', status: 'active', createdAt: '2024-01-02 14:30:00' },
-          { id: 3, username: 'user2', name: '用户二', role: 'user', email: 'user2@example.com', status: 'inactive', createdAt: '2024-01-03 09:15:00' },
-          { id: 4, username: 'user3', name: '张三', role: 'user', email: 'zhangsan@example.com', status: 'active', createdAt: '2024-01-04 11:45:00' },
-          { id: 5, username: 'user4', name: '李四', role: 'user', email: 'lisi@example.com', status: 'active', createdAt: '2024-01-05 16:20:00' }
-        ];
+        let filteredUsers = [...mockUsers];
         
         // 搜索过滤
         if (params.search) {
           const searchTerm = params.search.toLowerCase();
-          mockUsers = mockUsers.filter(user => 
+          filteredUsers = filteredUsers.filter(user => 
             user.username.toLowerCase().includes(searchTerm) ||
             user.name.toLowerCase().includes(searchTerm) ||
             user.email.toLowerCase().includes(searchTerm)
@@ -26,12 +27,12 @@ export const getUsers = async (params = {}) => {
         
         // 角色过滤
         if (params.role) {
-          mockUsers = mockUsers.filter(user => user.role === params.role);
+          filteredUsers = filteredUsers.filter(user => user.role === params.role);
         }
         
         // 状态过滤
         if (params.status) {
-          mockUsers = mockUsers.filter(user => user.status === params.status);
+          filteredUsers = filteredUsers.filter(user => user.status === params.status);
         }
         
         // 分页处理
@@ -39,11 +40,11 @@ export const getUsers = async (params = {}) => {
         const pageSize = params.pageSize || 10;
         const startIndex = (page - 1) * pageSize;
         const endIndex = startIndex + pageSize;
-        const paginatedUsers = mockUsers.slice(startIndex, endIndex);
+        const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
         
         resolve({
           users: paginatedUsers,
-          total: mockUsers.length,
+          total: filteredUsers.length,
           page,
           pageSize
         });
@@ -111,17 +112,49 @@ export const getOperationLogs = async (params = {}) => {
   }
 };
 
-// 添加用户
+
+
+// 删除用户
+export const deleteUser = async (userId) => {
+  try {
+    // 模拟API响应
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // 实际从模拟数据中删除用户
+        const userIndex = mockUsers.findIndex(user => user.id === userId);
+        if (userIndex !== -1) {
+          // 防止删除admin用户
+          if (mockUsers[userIndex].username === 'admin') {
+            throw new Error('不能删除管理员用户');
+          }
+          mockUsers.splice(userIndex, 1);
+          resolve({ success: true, id: userId });
+        } else {
+          throw new Error('用户不存在');
+        }
+      }, 500);
+    });
+  } catch (error) {
+    console.error('删除用户失败:', error);
+    throw error;
+  }
+};
+
+// 添加用户时更新模拟数据
 export const addUser = async (userData) => {
   try {
     // 模拟API响应
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve({
+        const newUser = {
           id: Date.now(),
           ...userData,
-          status: 'active'
-        });
+          status: 'active',
+          createdAt: new Date().toISOString().replace('T', ' ').substring(0, 19)
+        };
+        // 将新用户添加到模拟数据中
+        mockUsers.push(newUser);
+        resolve(newUser);
       }, 500);
     });
   } catch (error) {
@@ -130,32 +163,26 @@ export const addUser = async (userData) => {
   }
 };
 
-// 更新用户
+// 更新用户时更新模拟数据
 export const updateUser = async (userId, userData) => {
   try {
     // 模拟API响应
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve({ id: userId, ...userData });
+        const userIndex = mockUsers.findIndex(user => user.id === userId);
+        if (userIndex !== -1) {
+          mockUsers[userIndex] = {
+            ...mockUsers[userIndex],
+            ...userData
+          };
+          resolve(mockUsers[userIndex]);
+        } else {
+          throw new Error('用户不存在');
+        }
       }, 500);
     });
   } catch (error) {
     console.error('更新用户失败:', error);
-    throw error;
-  }
-};
-
-// 删除用户
-export const deleteUser = async (userId) => {
-  try {
-    // 模拟API响应
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ success: true, id: userId });
-      }, 500);
-    });
-  } catch (error) {
-    console.error('删除用户失败:', error);
     throw error;
   }
 };

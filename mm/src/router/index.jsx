@@ -11,14 +11,14 @@ import {
   SettingOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  TeamOutlined
+  MenuUnfoldOutlined
 } from '@ant-design/icons';
 import Dashboard from '../pages/Dashboard/Dashboard';
 import AssetHoldings from '../pages/AssetHoldings/AssetHoldings';
 import MessageList from '../pages/MessageList/MessageList';
 import ReportList from '../pages/ReportList/ReportList';
 import Login from '../pages/Login/Login';
+import Register from '../pages/Register/Register';
 import AuthGuard from '../components/AuthGuard/AuthGuard';
 import Admin from '../pages/Admin/Admin';
 
@@ -33,11 +33,16 @@ const MainLayout = () => {
     setCollapsed(!collapsed);
   };
   
-  const userMenu = (
+  // 管理员下拉菜单配置
+  const adminMenu = (
     <Menu>
-      <Menu.Item key="profile" icon={<UserOutlined />}>个人资料</Menu.Item>
-      <Menu.Item key="settings" icon={<SettingOutlined />}>系统设置</Menu.Item>
-      <Menu.Divider />
+      <Menu.Item 
+        key="settings" 
+        icon={<SettingOutlined />}
+        onClick={() => window.location.href = '/admin'}
+      >
+        设置
+      </Menu.Item>
       <Menu.Item 
         key="logout" 
         icon={<LogoutOutlined />}
@@ -46,7 +51,7 @@ const MainLayout = () => {
           window.location.href = '/login';
         }}
       >
-        退出登录
+        退出
       </Menu.Item>
     </Menu>
   );
@@ -79,19 +84,26 @@ const MainLayout = () => {
         }}
       >
         <div className="logo-container" style={{
-          height: '64px',
-          padding: '0 24px',
-          background: 'var(--primary-color)',
-          color: '#fff',
-          marginBottom: '0',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-        }}>
-          <h3 style={{ margin: 0, fontSize: collapsed ? '16px' : '18px', fontWeight: 600 }}>
-            数字货币投资系统
-          </h3>
+            height: '64px',
+            padding: collapsed ? '0 12px' : '0 24px',
+            background: 'var(--primary-color)',
+            color: '#fff',
+            marginBottom: '0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+          }}>
+            <h3 style={{ 
+              margin: 0, 
+              fontSize: collapsed ? '14px' : '18px', 
+              fontWeight: 600,
+              whiteSpace: 'nowrap',
+              opacity: 1,
+              transition: 'all 0.3s'
+            }}>
+              {collapsed ? '数字系统' : '数字货币投资系统'}
+            </h3>
           <button
             onClick={toggle}
             style={{
@@ -157,19 +169,7 @@ const MainLayout = () => {
                 marginBottom: '4px',
                 borderRadius: 'var(--border-radius)'
               }
-            },
-            // 仅管理员可见的菜单
-            ...(((JSON.parse(localStorage.getItem('user')) || {}).role === 'admin') ? [{
-              key: 'admin',
-              icon: <TeamOutlined />,
-              label: '系统管理',
-              onClick: () => window.location.href = '/admin',
-              style: {
-                marginBottom: '4px',
-                borderRadius: 'var(--border-radius)'
-              },
-              className: 'admin-menu-item'
-            }] : [])
+            }
           ]}
         />
       </Sider>
@@ -201,11 +201,11 @@ const MainLayout = () => {
               />
             </Badge>
             
-            <Dropdown menu={userMenu} placement="bottomRight" trigger={['click']}>
-              <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '8px', color: 'var(--text-color)' }}>
+            <Dropdown overlay={adminMenu} placement="bottomRight" trigger={['click']}>
+              <a onClick={(e) => e.preventDefault()} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-color)' }}>
                 <Avatar icon={<UserOutlined />} style={{ backgroundColor: 'var(--primary-color)' }} />
                 <span style={{ fontSize: '14px' }}>管理员</span>
-              </div>
+              </a>
             </Dropdown>
           </div>
         </Header>
@@ -232,8 +232,9 @@ const AppRouter = () => {
       {/* 根路径默认重定向到登录页面 */}
       <Route index element={<Navigate to="/login" />} />
       
-      {/* 登录页面，不需要认证 */}
+      {/* 登录和注册页面，不需要认证 */}
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       
       {/* 使用AuthGuard保护需要登录的页面 */}
       <Route element={<AuthGuard />}>

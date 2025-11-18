@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useSettings } from '../../contexts/SettingsContext';
-import { t } from '../../utils/i18n';
 
 const Header = () => {
   const { settings, loadSettings } = useSettings();
@@ -39,7 +38,7 @@ const Header = () => {
     <header className="header">
       <div className="header-logo">{settings.systemName || '数字资产投资系统'}</div>
       <div className="header-right">
-        <span className="user-info">{t('welcomeAdmin')}</span>
+        {/* 管理员按钮已移除 */}
       </div>
     </header>
   );

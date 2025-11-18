@@ -46,6 +46,9 @@ const Admin = () => {
   const [resetPasswordVisible, setResetPasswordVisible] = useState(false);
   const [resetPasswordForm] = Form.useForm();
   const [selectedUserId, setSelectedUserId] = useState(null);
+  // 日志详情模态框
+  const [logDetailsVisible, setLogDetailsVisible] = useState(false);
+  const [selectedLog, setSelectedLog] = useState(null);
 
   // 获取用户列表
   const fetchUsers = async () => {
@@ -207,6 +210,12 @@ const Admin = () => {
     },
   ];
 
+  // 查看日志详情
+  const handleViewLogDetails = (log) => {
+    setSelectedLog(log);
+    setLogDetailsVisible(true);
+  };
+
   const logColumns = [
     {
       title: t('operator'),
@@ -233,15 +242,7 @@ const Admin = () => {
       dataIndex: 'ip',
       key: 'ip'
     },
-    {
-      title: t('details'),
-      key: 'details',
-      render: () => (
-        <Button type="link" icon={<EyeOutlined />} size="small">
-          {t('viewDetails')}
-        </Button>
-      )
-    }
+    {      title: '详情',      key: 'details',      render: (_, record) => (        <Button           type="link"           icon={<EyeOutlined />}           size="small"          onClick={() => handleViewLogDetails(record)}        >          查看详情        </Button>      )    }
   ];
 
   // 打开添加用户模态框
@@ -342,8 +343,8 @@ const Admin = () => {
   // 删除用户
   const handleDeleteUser = (userId) => {
     Modal.confirm({
-      title: t('confirmDelete'),
-      content: t('deleteWarning'),
+      title: t('deleteUserConfirm'),
+      content: t('deleteUserContent'),
       onOk: async () => {
         try {
           await deleteUser(userId);
@@ -374,11 +375,8 @@ const Admin = () => {
   };
 
   const renderSystemSettings = () => {
-    // 设置表单初始值（移除theme相关配置）
+    // 设置表单初始值（移除theme相关配置和基础设置）
     const formInitialValues = {
-      systemName: settings.systemName || '数字资产投资系统',
-      defaultLanguage: settings.defaultLanguage || 'zh-CN',
-      maxUploadSize: settings.maxUploadSize || 100,
       apiTimeout: settings.apiTimeout || 30000,
       autoLogoutTime: settings.autoLogoutTime ? settings.autoLogoutTime / 60000 : 30,
       notificationEnabled: settings.notificationEnabled !== undefined ? settings.notificationEnabled : true,
@@ -397,32 +395,6 @@ const Admin = () => {
           onFinish={handleSettingsFormSubmit}
           initialValues={formInitialValues}
         >
-          <Card className="settings-card" title={t('basicSettings')}>
-            <Form.Item
-              label={t('systemName')}
-              name="systemName"
-              rules={[{ required: true, message: t('enterSystemName') }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label={t('defaultLanguage')}
-              name="defaultLanguage"
-              rules={[{ required: true, message: t('selectDefaultLanguage') }]}
-            >
-              <Select>
-                <Select.Option value="zh-CN">{t('chinese')}</Select.Option>
-                <Select.Option value="en-US">{t('english')}</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label={t('maxUploadSize')}
-              name="maxUploadSize"
-              rules={[{ required: true, message: t('enterMaxUploadSize') }]}
-            >
-              <Input type="number" />
-            </Form.Item>
-          </Card>
           <Card className="settings-card" title={t('securitySettings')}>
             <Form.Item
               label={t('apiTimeout')}
@@ -457,9 +429,11 @@ const Admin = () => {
               <Input type="number" />
             </Form.Item>
           </Card>
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>{t('saveSettings')}</Button>
-            <Button onClick={() => form.resetFields()}>{t('reset')}</Button>
+          <Form.Item wrapperCol={{ offset: 4, span: 16 }} style={{ textAlign: 'center', marginTop: '24px' }}>
+            <Space size="middle">
+              <Button type="primary" htmlType="submit" size="middle">{t('saveSettings')}</Button>
+              <Button size="middle" onClick={() => settingsForm.resetFields()}>{t('reset')}</Button>
+            </Space>
           </Form.Item>
         </Form>
       </div>
@@ -734,6 +708,8 @@ const Admin = () => {
           </Form.Item>
         </Form>
       </Modal>
+      
+      {/* 日志详情模态框 */}      <Modal        title="操作日志详情"        open={logDetailsVisible}        onCancel={() => setLogDetailsVisible(false)}        footer={[          <Button key="close" onClick={() => setLogDetailsVisible(false)}>            关闭          </Button>        ]}        width={650}        bodyStyle={{ padding: '24px' }}      >        {selectedLog && (          <div className="log-details" style={{ fontSize: '14px' }}>            <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>              <Text strong style={{ marginBottom: '8px', fontSize: '15px', color: '#1890ff' }}>基本信息</Text>              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>操作人:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.operator || '-'}</Text>                </div>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>操作类型:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.action || '-'}</Text>                </div>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>操作对象:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.target || '-'}</Text>                </div>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>IP地址:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.ip || '-'}</Text>                </div>              </div>            </div>            <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>              <Text strong style={{ marginBottom: '8px', fontSize: '15px', color: '#1890ff' }}>操作时间</Text>              <div style={{ display: 'flex', alignItems: 'flex-start' }}>                <Text strong style={{ width: '80px', color: '#666' }}>时间:</Text>                <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.time || '-'}</Text>              </div>            </div>            {selectedLog.description && (              <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>                <Text strong style={{ marginBottom: '8px', fontSize: '15px', color: '#1890ff' }}>操作描述</Text>                <div style={{ backgroundColor: '#f7f7f7', padding: '12px', borderRadius: '4px', lineHeight: '1.6' }}>                  <Text>{selectedLog.description}</Text>                </div>              </div>            )}            {selectedLog.params && Object.keys(selectedLog.params).length > 0 && (              <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>                <Text strong style={{ marginBottom: '12px', fontSize: '15px', color: '#1890ff' }}>参数详情</Text>                <pre style={{ fontSize: '13px', backgroundColor: '#f5f5f5', padding: '16px', borderRadius: '6px', overflow: 'auto', border: '1px solid #e8e8e8', lineHeight: '1.5' }}>                  {JSON.stringify(selectedLog.params, null, 2)}                </pre>              </div>            )}          </div>        )}      </Modal>
     </div>
   );
 };
