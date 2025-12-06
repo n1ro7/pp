@@ -20,15 +20,23 @@ public class AuthController {
         String username = loginData.get("username");
         String password = loginData.get("password");
         
-        Map<String, Object> result = authService.login(username, password);
-        
-        // 返回统一格式的响应
-        Map<String, Object> response = new java.util.HashMap<>();
-        response.put("code", 200);
-        response.put("message", "登录成功");
-        response.put("data", result);
-        
-        return ResponseEntity.ok(response);
+        try {
+            Map<String, Object> result = authService.login(username, password);
+            
+            // 返回统一格式的响应
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("code", 200);
+            response.put("message", "登录成功");
+            response.put("data", result);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("code", 500);
+            response.put("message", e.getMessage());
+            
+            return ResponseEntity.ok(response);
+        }
     }
 
     // 获取当前用户信息

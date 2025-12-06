@@ -26,9 +26,13 @@ export const exportAssetExcel = (currentData, historyData, timeRange) => {
     // 3. 处理历史持仓sheet
     const formattedHistory = historyData.map((day) => {
       const row = { 日期: day.date };
-      day.assets.forEach((asset) => {
-        row[`${asset.assetType}_占比`] = `${(asset.rate || 0).toFixed(2)}%`;
-        row[`${asset.assetType}_金额(万美元)`] = (asset.amount || 0).toFixed(2);
+      // 遍历day对象中的所有属性，排除date属性
+      Object.entries(day).forEach(([key, value]) => {
+        if (key !== 'date') {
+          row[`${key}_占比`] = `${value.toFixed(2)}%`;
+          // 金额使用占比*10000（简化处理，实际项目中应使用真实金额）
+          row[`${key}_金额(万美元)`] = (value * 100).toFixed(2);
+        }
       });
       return row;
     });

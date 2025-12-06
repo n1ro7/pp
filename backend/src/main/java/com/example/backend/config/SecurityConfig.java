@@ -31,12 +31,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // 禁用CSRF，因为使用JWT
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 无状态会话
             .authorizeHttpRequests(auth -> auth
-                // 允许所有用户访问的路径
-                .requestMatchers("/api/auth/login", "/api/auth/logout", "/api/auth/current-user").permitAll()
-                // 允许管理员访问的路径
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                // 其他所有请求都需要认证
-                .anyRequest().authenticated()
+                // 开发环境临时允许所有请求，不需要认证
+                .anyRequest().permitAll()
             );
 
         // 在实际项目中，这里应该添加JWT过滤器

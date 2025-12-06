@@ -102,7 +102,11 @@ export default function SettingsProvider({ children }) {
       }
     }
     
-    loadSettings();
+    // 只有当用户有token时才加载系统设置，避免无限重定向
+    const token = localStorage.getItem('token');
+    if (token) {
+      loadSettings();
+    }
   }, []);
 
   const contextValue = {

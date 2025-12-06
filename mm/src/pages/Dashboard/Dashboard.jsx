@@ -3,6 +3,7 @@ import { Card, Row, Col, Button, Statistic, Space, message, Typography, Spin, To
 import { BellOutlined, FileTextOutlined, WalletOutlined, ReloadOutlined, BarChartOutlined, FileOutlined, ArrowUpOutlined, ArrowDownOutlined, PieChartOutlined, ClockCircleOutlined, AlertOutlined, MessageOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { fetchDashboardStats } from '../../services/dashboardService';
+import { getCurrentUser } from '../../services/authService';
 
 const { Title } = Typography;
 
@@ -52,7 +53,14 @@ const Dashboard = () => {
   const loadDashboardData = async () => {
     setLoading(true);
     try {
-      const data = await fetchDashboardStats();
+      // 获取当前用户信息
+      const currentUser = getCurrentUser();
+      if (!currentUser || !currentUser.id) {
+        throw new Error('用户未登录或用户信息不完整');
+      }
+      
+      // 调用API获取仪表盘数据，传递userId
+      const data = await fetchDashboardStats(currentUser.id);
       // 转换API数据格式以适应新的UI需求
       setDashboardData({
         unreadMessages: data.unreadMessages || 5,
@@ -192,27 +200,29 @@ const Dashboard = () => {
         {statCards.map((card) => (
           <Col xs={24} sm={12} lg={6} key={card.key}>
             <Card
-              hoverable
-              style={{
-                borderRadius: '12px',
-                border: 'none',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                transition: 'all 0.3s ease',
-                overflow: 'hidden'
-              }}
-              bodyStyle={{
-                padding: '24px',
-                position: 'relative'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.12)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
-              }}
-            >
+                hoverable
+                style={{
+                  borderRadius: '12px',
+                  border: 'none',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s ease',
+                  overflow: 'hidden'
+                }}
+                styles={{
+                  body: {
+                    padding: '24px',
+                    position: 'relative'
+                  }
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.12)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+                }}
+              >
               {/* 背景装饰 */}
               <div 
                 style={{
@@ -257,13 +267,15 @@ const Dashboard = () => {
       {/* 功能快速入口 */}
       <Card 
         title="快捷操作" 
-        bordered={false}
+        variant="outlined"
         style={{ 
           marginBottom: '32px',
           borderRadius: '12px',
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
         }}
-        bodyStyle={{ padding: '24px' }}
+        styles={{ 
+          body: { padding: '24px' }
+        }}
       >
         <Space size="middle" wrap style={{ 
           display: 'flex', 
@@ -381,13 +393,15 @@ const Dashboard = () => {
     {/* 近期动态列表 */}
     <Card 
       title="近期动态" 
-      bordered={false}
+      variant="outlined"
       style={{
         borderRadius: '12px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
         marginBottom: '32px'
       }}
-      bodyStyle={{ padding: '24px' }}
+      styles={{ 
+        body: { padding: '24px' }
+      }}
     >
       {dashboardData.recentActivities.length > 0 ? (
         <List
@@ -449,12 +463,14 @@ const Dashboard = () => {
     {/* 功能模块快速入口 */}
     <Card 
       title="功能模块" 
-      bordered={false}
+      variant="outlined"
       style={{
         borderRadius: '12px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
       }}
-      bodyStyle={{ padding: '24px' }}
+      styles={{ 
+        body: { padding: '24px' }
+      }}
     >
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} md={8}>

@@ -259,7 +259,9 @@ const MessageList = () => {
         {/* 消息列表 */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <Spin size="large" tip="加载中..." />
+            <Spin size="large" tip="加载中">
+              <div style={{ padding: '20px' }}></div>
+            </Spin>
           </div>
         ) : filteredMessages.length === 0 ? (
           <Empty description="暂无符合条件的消息" />

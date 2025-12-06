@@ -97,8 +97,14 @@ const Admin = () => {
   // 初始加载
   useEffect(() => {
     fetchUsers();
-    fetchSystemSettings();
   }, [searchParams]);
+
+  // 当切换到settings标签页时，获取并设置系统设置
+  useEffect(() => {
+    if (activeTab === 'settings') {
+      fetchSystemSettings();
+    }
+  }, [activeTab]);
 
   // 保存系统设置
   const handleSettingsFormSubmit = async (values) => {
@@ -394,6 +400,7 @@ const Admin = () => {
           layout="horizontal"
           onFinish={handleSettingsFormSubmit}
           initialValues={formInitialValues}
+          form={settingsForm}
         >
           <Card className="settings-card" title={t('securitySettings')}>
             <Form.Item
@@ -440,133 +447,144 @@ const Admin = () => {
     );
   };
 
+  // 定义Tabs的items
+  const tabItems = [
+    {
+      key: 'users',
+      label: <span><UserOutlined /> {t('userManagement')}</span>,
+      children: (
+        <div className="users-section">
+          <div className="section-header">
+            <h3>{t('userList')}</h3>
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleAddUser}>
+              {t('addUser')}
+            </Button>
+          </div>
+          
+          {/* 搜索表单 */}
+          <div className="search-section">
+            <Card className="search-card">
+              <Form layout="inline" onFinish={handleUserSearch}>
+                <Form.Item name="search" className="search-item">
+                  <Input prefix={<SearchOutlined />} placeholder={t('searchUsernameNameEmail')} />
+                </Form.Item>
+                <Form.Item name="role">
+                  <Select placeholder={t('role')} allowClear>
+                    <Option value="admin">{t('admin')}</Option>
+                    <Option value="user">{t('regularUser')}</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item name="status">
+                  <Select placeholder={t('status')} allowClear>
+                    <Option value="active">{t('enabled')}</Option>
+                    <Option value="inactive">{t('disabled')}</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item>
+                  <Space>
+                    <Button type="primary" htmlType="submit">{t('search')}</Button>
+                    <Button onClick={resetUserSearch}>{t('reset')}</Button>
+                    <Button icon={<ReloadOutlined />} onClick={fetchUsers}>{t('refresh')}</Button>
+                  </Space>
+                </Form.Item>
+              </Form>
+            </Card>
+          </div>
+          
+          <div className="users-table">
+            <Table
+              className="users-table"
+              columns={userColumns}
+              dataSource={users}
+              rowKey="id"
+              loading={loading}
+              pagination={{
+                total,
+                current: searchParams.page,
+                pageSize: searchParams.pageSize,
+                showSizeChanger: true,
+                showTotal: total => `${t('total')} ${total} ${t('items')}`,
+                onChange: handleUserPageChange,
+                onShowSizeChange: handleUserPageChange
+              }}
+              size="middle"
+            />
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'logs',
+      label: <span><AuditOutlined /> {t('operationLogs')}</span>,
+      children: (
+        <div className="logs-section">
+          <div className="section-header">
+            <h3>{t('systemOperationLogs')}</h3>
+            <Button icon={<ReloadOutlined />} onClick={fetchOperationLogs}>
+              {t('refresh')}
+            </Button>
+          </div>
+          
+          {/* 日志搜索表单 */}
+          <div className="search-section">
+            <Card className="search-card">
+              <Form layout="inline" onFinish={handleLogSearch}>
+                <Form.Item name="operator">
+                  <Input prefix={<UserOutlined />} placeholder={t('operator')} />
+                </Form.Item>
+                <Form.Item name="action">
+                  <Input prefix={<SearchOutlined />} placeholder={t('operationType')} />
+                </Form.Item>
+                <Form.Item>
+                  <Space>
+                    <Button type="primary" htmlType="submit">{t('search')}</Button>
+                    <Button onClick={resetLogSearch}>{t('reset')}</Button>
+                    <Button icon={<ReloadOutlined />} onClick={fetchOperationLogs}>{t('refresh')}</Button>
+                  </Space>
+                </Form.Item>
+              </Form>
+            </Card>
+          </div>
+          
+          <div className="logs-table">
+            <Table
+              className="logs-table"
+              columns={logColumns}
+              dataSource={logs}
+              rowKey="id"
+              loading={loading}
+              pagination={{
+                total: logsTotal,
+                current: logSearchParams.page,
+                pageSize: logSearchParams.pageSize,
+                showSizeChanger: true,
+                showTotal: total => `${t('total')} ${total} ${t('logs')}`,
+                onChange: handleLogPageChange,
+                onShowSizeChange: handleLogPageChange
+              }}
+              size="middle"
+            />
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'settings',
+      label: <span><SettingOutlined /> {t('systemSettings')}</span>,
+      children: (
+        <div className="settings-section">
+          <Spin spinning={settingsLoading}>
+            {renderSystemSettings()}
+          </Spin>
+        </div>
+      )
+    }
+  ];
+
   return (
     <div className="admin-page">
       <Card className="admin-card" title={t('systemManagement')} extra={t('manageUsersSettings')}>
-        <Tabs activeKey={activeTab} onChange={setActiveTab}>
-          {/* 用户管理标签页 */}
-          <TabPane tab={<span><UserOutlined /> {t('userManagement')}</span>} key="users">
-            <div className="users-section">
-              <div className="section-header">
-                <h3>{t('userList')}</h3>
-                <Button type="primary" icon={<PlusOutlined />} onClick={handleAddUser}>
-                  {t('addUser')}
-                </Button>
-              </div>
-              
-              {/* 搜索表单 */}
-              <div className="search-section">
-                <Card className="search-card">
-                  <Form layout="inline" onFinish={handleUserSearch}>
-                    <Form.Item name="search" className="search-item">
-                      <Input prefix={<SearchOutlined />} placeholder={t('searchUsernameNameEmail')} />
-                    </Form.Item>
-                    <Form.Item name="role">
-                      <Select placeholder={t('role')} allowClear>
-                        <Option value="admin">{t('admin')}</Option>
-                        <Option value="user">{t('regularUser')}</Option>
-                      </Select>
-                    </Form.Item>
-                    <Form.Item name="status">
-                      <Select placeholder={t('status')} allowClear>
-                        <Option value="active">{t('enabled')}</Option>
-                        <Option value="inactive">{t('disabled')}</Option>
-                      </Select>
-                    </Form.Item>
-                    <Form.Item>
-                      <Space>
-                        <Button type="primary" htmlType="submit">{t('search')}</Button>
-                        <Button onClick={resetUserSearch}>{t('reset')}</Button>
-                        <Button icon={<ReloadOutlined />} onClick={fetchUsers}>{t('refresh')}</Button>
-                      </Space>
-                    </Form.Item>
-                  </Form>
-                </Card>
-              </div>
-              
-              <div className="users-table">
-                <Table
-                  className="users-table"
-                  columns={userColumns}
-                  dataSource={users}
-                  rowKey="id"
-                  loading={loading}
-                  pagination={{
-                    total,
-                    current: searchParams.page,
-                    pageSize: searchParams.pageSize,
-                    showSizeChanger: true,
-                    showTotal: total => `${t('total')} ${total} ${t('items')}`,
-                    onChange: handleUserPageChange,
-                    onShowSizeChange: handleUserPageChange
-                  }}
-                  size="middle"
-                />
-              </div>
-            </div>
-          </TabPane>
-          
-          {/* 操作日志标签页 */}
-          <TabPane tab={<span><AuditOutlined /> {t('operationLogs')}</span>} key="logs">
-            <div className="logs-section">
-              <div className="section-header">
-                <h3>{t('systemOperationLogs')}</h3>
-                <Button icon={<ReloadOutlined />} onClick={fetchOperationLogs}>
-                  {t('refresh')}
-                </Button>
-              </div>
-              
-              {/* 日志搜索表单 */}
-              <div className="search-section">
-                <Card className="search-card">
-                  <Form layout="inline" onFinish={handleLogSearch}>
-                    <Form.Item name="operator">
-                      <Input prefix={<UserOutlined />} placeholder={t('operator')} />
-                    </Form.Item>
-                    <Form.Item name="action">
-                      <Input prefix={<SearchOutlined />} placeholder={t('operationType')} />
-                    </Form.Item>
-                    <Form.Item>
-                      <Space>
-                        <Button type="primary" htmlType="submit">{t('search')}</Button>
-                        <Button onClick={resetLogSearch}>{t('reset')}</Button>
-                        <Button icon={<ReloadOutlined />} onClick={fetchOperationLogs}>{t('refresh')}</Button>
-                      </Space>
-                    </Form.Item>
-                  </Form>
-                </Card>
-              </div>
-              
-              <div className="logs-table">
-                <Table
-                  className="logs-table"
-                  columns={logColumns}
-                  dataSource={logs}
-                  rowKey="id"
-                  loading={loading}
-                  pagination={{
-                    total: logsTotal,
-                    current: logSearchParams.page,
-                    pageSize: logSearchParams.pageSize,
-                    showSizeChanger: true,
-                    showTotal: total => `${t('total')} ${total} ${t('logs')}`,
-                    onChange: handleLogPageChange,
-                    onShowSizeChange: handleLogPageChange
-                  }}
-                  size="middle"
-                />
-              </div>
-            </div>
-          </TabPane>
-
-          {/* 系统设置标签页 */}
-          <TabPane tab={<span><SettingOutlined /> {t('systemSettings')}</span>} key="settings">
-            <div className="settings-section">
-              <Spin spinning={settingsLoading}>
-                {renderSystemSettings()}
-              </Spin>
-            </div>
-          </TabPane>
+        <Tabs activeKey={activeTab} onChange={setActiveTab} items={tabItems}>
         </Tabs>
       </Card>
 
@@ -709,7 +727,19 @@ const Admin = () => {
         </Form>
       </Modal>
       
-      {/* 日志详情模态框 */}      <Modal        title="操作日志详情"        open={logDetailsVisible}        onCancel={() => setLogDetailsVisible(false)}        footer={[          <Button key="close" onClick={() => setLogDetailsVisible(false)}>            关闭          </Button>        ]}        width={650}        bodyStyle={{ padding: '24px' }}      >        {selectedLog && (          <div className="log-details" style={{ fontSize: '14px' }}>            <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>              <Text strong style={{ marginBottom: '8px', fontSize: '15px', color: '#1890ff' }}>基本信息</Text>              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>操作人:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.operator || '-'}</Text>                </div>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>操作类型:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.action || '-'}</Text>                </div>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>操作对象:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.target || '-'}</Text>                </div>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>IP地址:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.ip || '-'}</Text>                </div>              </div>            </div>            <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>              <Text strong style={{ marginBottom: '8px', fontSize: '15px', color: '#1890ff' }}>操作时间</Text>              <div style={{ display: 'flex', alignItems: 'flex-start' }}>                <Text strong style={{ width: '80px', color: '#666' }}>时间:</Text>                <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.time || '-'}</Text>              </div>            </div>            {selectedLog.description && (              <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>                <Text strong style={{ marginBottom: '8px', fontSize: '15px', color: '#1890ff' }}>操作描述</Text>                <div style={{ backgroundColor: '#f7f7f7', padding: '12px', borderRadius: '4px', lineHeight: '1.6' }}>                  <Text>{selectedLog.description}</Text>                </div>              </div>            )}            {selectedLog.params && Object.keys(selectedLog.params).length > 0 && (              <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>                <Text strong style={{ marginBottom: '12px', fontSize: '15px', color: '#1890ff' }}>参数详情</Text>                <pre style={{ fontSize: '13px', backgroundColor: '#f5f5f5', padding: '16px', borderRadius: '6px', overflow: 'auto', border: '1px solid #e8e8e8', lineHeight: '1.5' }}>                  {JSON.stringify(selectedLog.params, null, 2)}                </pre>              </div>            )}          </div>        )}      </Modal>
+      {/* 日志详情模态框 */}
+      <Modal
+        title="操作日志详情"
+        open={logDetailsVisible}
+        onCancel={() => setLogDetailsVisible(false)}
+        footer={[
+          <Button key="close" onClick={() => setLogDetailsVisible(false)}>
+            关闭
+          </Button>
+        ]}
+        width={650}
+        styles={{ body: { padding: '24px' } }}
+      >        {selectedLog && (          <div className="log-details" style={{ fontSize: '14px' }}>            <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>              <Text strong style={{ marginBottom: '8px', fontSize: '15px', color: '#1890ff' }}>基本信息</Text>              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>操作人:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.operator || '-'}</Text>                </div>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>操作类型:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.action || '-'}</Text>                </div>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>操作对象:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.target || '-'}</Text>                </div>                <div style={{ display: 'flex', alignItems: 'flex-start' }}>                  <Text strong style={{ width: '80px', color: '#666' }}>IP地址:</Text>                  <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.ip || '-'}</Text>                </div>              </div>            </div>            <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>              <Text strong style={{ marginBottom: '8px', fontSize: '15px', color: '#1890ff' }}>操作时间</Text>              <div style={{ display: 'flex', alignItems: 'flex-start' }}>                <Text strong style={{ width: '80px', color: '#666' }}>时间:</Text>                <Text style={{ flex: 1, wordBreak: 'break-all' }}>{selectedLog.time || '-'}</Text>              </div>            </div>            {selectedLog.description && (              <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>                <Text strong style={{ marginBottom: '8px', fontSize: '15px', color: '#1890ff' }}>操作描述</Text>                <div style={{ backgroundColor: '#f7f7f7', padding: '12px', borderRadius: '4px', lineHeight: '1.6' }}>                  <Text>{selectedLog.description}</Text>                </div>              </div>            )}            {selectedLog.params && Object.keys(selectedLog.params).length > 0 && (              <div className="log-detail-item" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column' }}>                <Text strong style={{ marginBottom: '12px', fontSize: '15px', color: '#1890ff' }}>参数详情</Text>                <pre style={{ fontSize: '13px', backgroundColor: '#f5f5f5', padding: '16px', borderRadius: '6px', overflow: 'auto', border: '1px solid #e8e8e8', lineHeight: '1.5' }}>                  {JSON.stringify(selectedLog.params, null, 2)}                </pre>              </div>            )}          </div>        )}      </Modal>
     </div>
   );
 };

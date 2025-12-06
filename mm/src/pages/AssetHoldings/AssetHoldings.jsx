@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import request from '../../services/request';
 import { exportAssetExcel } from '../../utils/exportExcel';
 import { fetchAssetHoldings } from '../../services/assetService';
+import { getCurrentUser } from '../../services/authService';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -42,16 +43,41 @@ const AssetHoldings = () => {
   // 1. 获取当前持仓数据
   const fetchCurrentHoldings = async () => {
     try {
-      // 优先使用模拟数据服务
-      const mockData = await fetchAssetHoldings();
-      // 转换模拟数据为饼图格式
-      const totalValue = mockData.reduce((sum, asset) => sum + asset.currentValue, 0);
-      const formatted = mockData.map((item) => {
-          const percentage = Math.round((item.currentValue / totalValue * 100) || 0); // 计算占比并取整
+      // 获取当前用户信息
+      const currentUser = getCurrentUser();
+      
+      // 调用真实API获取资产数据
+      let assetData = [];
+      if (currentUser && currentUser.id) {
+        try {
+          assetData = await fetchAssetHoldings(currentUser.id);
+        } catch (apiError) {
+          console.error('API调用失败，使用默认数据:', apiError);
+          // API调用失败，继续使用默认数据
+        }
+      }
+      
+      // 如果API返回数据为空或失败，使用默认数据
+      if (!assetData || assetData.length === 0) {
+        console.log('使用默认持仓数据');
+        setCurrentHoldings([
+          { name: '股票A', value: 28, amount: 280, rateText: '28%' },
+          { name: '债券B', value: 22, amount: 220, rateText: '22%' },
+          { name: '基金C', value: 25, amount: 250, rateText: '25%' },
+          { name: '房产D', value: 20, amount: 200, rateText: '20%' },
+          { name: '现金E', value: 5, amount: 50, rateText: '5%' },
+        ]);
+        return;
+      }
+      
+      // 转换API数据为饼图格式
+      const totalValue = assetData.reduce((sum, asset) => sum + (asset.currentValue || 0), 0);
+      const formatted = assetData.map((item) => {
+          const percentage = Math.round(((item.currentValue || 0) / totalValue * 100) || 0); // 计算占比并取整
           return {
-            name: item.name, // 资产名称
+            name: item.name || '未知资产', // 资产名称
             value: percentage, // 计算占比（%）已取整
-            amount: item.currentValue / 10000, // 转换为万美元
+            amount: ((item.currentValue || 0) / 10000), // 转换为万美元
             rateText: `${percentage}%`, // 占比文本（带%，整数显示）
           };
         });
@@ -167,7 +193,7 @@ const AssetHoldings = () => {
       <Row gutter={[24, 24]}>
         {/* 1. 当前持仓饼图 */}
         <Col xs={24}>
-          <Card title="当前资产占比（总计：1000万美元）" bordered>
+          <Card title="当前资产占比（总计：1000万美元）" variant="outlined">
             {currentHoldings.length > 0 ? (
               <ResponsiveContainer width="100%" height={400}>
                 <PieChart>
@@ -203,7 +229,9 @@ const AssetHoldings = () => {
             ) : (
               // 无数据时显示空状态
               <div style={{ textAlign: 'center', padding: '80px 0' }}>
-                <Spin size="middle" tip="暂无当前持仓数据" />
+                <Spin size="middle" tip="暂无当前持仓数据">
+                  <div style={{ height: '100px' }}></div>
+                </Spin>
               </div>
             )}
           </Card>
@@ -211,7 +239,7 @@ const AssetHoldings = () => {
 
         {/* 2. 历史持仓折线图 */}
         <Col xs={24}>
-          <Card title={`${timeRange === '7days' ? '近7日' : '近30日'}持仓占比变化`} bordered>
+          <Card title={`${timeRange === '7days' ? '近7日' : '近30日'}持仓占比变化`} variant="outlined">
             {historyHoldings.length > 0 ? (
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart
@@ -260,7 +288,9 @@ const AssetHoldings = () => {
             ) : (
               // 无数据时显示空状态
               <div style={{ textAlign: 'center', padding: '80px 0' }}>
-                <Spin size="middle" tip="暂无历史持仓数据" />
+                <Spin size="middle" tip="暂无历史持仓数据">
+                  <div style={{ height: '100px' }}></div>
+                </Spin>
               </div>
             )}
           </Card>

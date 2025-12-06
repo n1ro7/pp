@@ -158,7 +158,9 @@ const ReportList = () => {
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <Spin size="large" tip="加载中..." />
+          <Spin size="large" tip="加载中">
+            <div style={{ padding: '20px' }}></div>
+          </Spin>
         </div>
       ) : reports.length === 0 ? (
         <Empty description="暂无建议报告" />
@@ -262,7 +264,7 @@ const ReportList = () => {
             {/* 原始消息 */}
             <div style={{ marginBottom: '24px' }}>
               <Title level={5} style={{ marginBottom: '16px' }}>关联原始消息</Title>
-              <Card size="small" bordered>
+              <Card size="small" variant="outlined">
                 <Paragraph style={{ lineHeight: 1.8 }}>{currentReport.originalMessage}</Paragraph>
               </Card>
             </div>

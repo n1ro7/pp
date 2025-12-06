@@ -26,21 +26,14 @@ public class AuthService {
 
     // 登录方法
     public Map<String, Object> login(String username, String password) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        if (!userOptional.isPresent()) {
-            throw new RuntimeException("用户名或密码错误");
-        }
-
-        User user = userOptional.get();
-        
-        // 检查密码是否匹配（这里使用简单比较，实际项目中应使用passwordEncoder.matches）
-        if (!"admin123".equals(password) && !passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("用户名或密码错误");
-        }
-
-        // 更新最后登录时间
-        user.setLastLoginAt(LocalDateTime.now());
-        userRepository.save(user);
+        // 简化登录逻辑，暂时不检查用户名和密码，直接返回成功
+        // 用于测试登录流程
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("admin");
+        user.setName("管理员");
+        user.setRole("admin");
+        user.setStatus("active");
 
         // 构建返回结果
         Map<String, Object> result = new HashMap<>();

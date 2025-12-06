@@ -1,13 +1,43 @@
-// 模拟获取仪表盘统计数据
-export const fetchDashboardStats = async () => {
-  // 模拟API请求延迟
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // 返回模拟数据
-  return {
-    totalAssets: 42,
-    totalValue: 1586240.50,
-    dailyChange: 1.24,
-    monthlyChange: 5.67
-  };
+import request from './request';
+
+// 获取仪表盘统计数据
+export const fetchDashboardStats = async (userId) => {
+  try {
+    const response = await request.get('/dashboard/stats', { 
+      params: { userId },
+      noLoading: false
+    });
+    return response;
+  } catch (error) {
+    console.error('获取仪表盘统计数据失败:', error);
+    throw error;
+  }
+};
+
+// 获取资产分布数据
+export const fetchAssetDistribution = async (userId) => {
+  try {
+    const response = await request.get('/dashboard/asset-distribution', { 
+      params: { userId },
+      noLoading: false
+    });
+    return response;
+  } catch (error) {
+    console.error('获取资产分布数据失败:', error);
+    throw error;
+  }
+};
+
+// 获取最近交易记录
+export const fetchRecentTransactions = async (userId, limit = 10) => {
+  try {
+    const response = await request.get('/dashboard/recent-transactions', { 
+      params: { userId, limit },
+      noLoading: false
+    });
+    return response;
+  } catch (error) {
+    console.error('获取最近交易记录失败:', error);
+    throw error;
+  }
 };

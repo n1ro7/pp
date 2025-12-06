@@ -34,27 +34,23 @@ const MainLayout = () => {
   };
   
   // 管理员下拉菜单配置
-  const adminMenu = (
-    <Menu>
-      <Menu.Item 
-        key="settings" 
-        icon={<SettingOutlined />}
-        onClick={() => window.location.href = '/admin'}
-      >
-        设置
-      </Menu.Item>
-      <Menu.Item 
-        key="logout" 
-        icon={<LogoutOutlined />}
-        onClick={() => {
-          logout();
-          window.location.href = '/login';
-        }}
-      >
-        退出
-      </Menu.Item>
-    </Menu>
-  );
+  const adminMenuItems = [
+    {
+      key: "settings",
+      label: "设置",
+      icon: <SettingOutlined />,
+      onClick: () => window.location.href = '/admin'
+    },
+    {
+      key: "logout",
+      label: "退出",
+      icon: <LogoutOutlined />,
+      onClick: () => {
+        logout();
+        window.location.href = '/login';
+      }
+    }
+  ];
   
   // 获取当前路由对应的菜单key
   const getCurrentMenuKey = () => {
@@ -201,7 +197,7 @@ const MainLayout = () => {
               />
             </Badge>
             
-            <Dropdown overlay={adminMenu} placement="bottomRight" trigger={['click']}>
+            <Dropdown menu={{ items: adminMenuItems }} placement="bottomRight" trigger={['click']}>
               <a onClick={(e) => e.preventDefault()} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-color)' }}>
                 <Avatar icon={<UserOutlined />} style={{ backgroundColor: 'var(--primary-color)' }} />
                 <span style={{ fontSize: '14px' }}>管理员</span>
