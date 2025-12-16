@@ -47,78 +47,47 @@ const AssetHoldings = () => {
       const currentUser = getCurrentUser();
       
       // 调用真实API获取资产数据
-      let assetData = [];
       if (currentUser && currentUser.id) {
-        try {
-          assetData = await fetchAssetHoldings(currentUser.id);
-        } catch (apiError) {
-          console.error('API调用失败，使用默认数据:', apiError);
-          // API调用失败，继续使用默认数据
+        const assetData = await fetchAssetHoldings(currentUser.id);
+        
+        // 转换API数据为饼图格式
+        if (assetData && assetData.length > 0) {
+          const totalValue = assetData.reduce((sum, asset) => sum + (asset.currentValue || 0), 0);
+          const formatted = assetData.map((item) => {
+              const percentage = Math.round(((item.currentValue || 0) / totalValue * 100) || 0); // 计算占比并取整
+              return {
+                name: item.name || '未知资产', // 资产名称
+                value: percentage, // 计算占比（%）已取整
+                amount: ((item.currentValue || 0) / 10000), // 转换为万美元
+                rateText: `${percentage}%`, // 占比文本（带%，整数显示）
+              };
+            });
+          setCurrentHoldings(formatted);
+        } else {
+          setCurrentHoldings([]);
         }
+      } else {
+        setCurrentHoldings([]);
       }
-      
-      // 如果API返回数据为空或失败，使用默认数据
-      if (!assetData || assetData.length === 0) {
-        console.log('使用默认持仓数据');
-        setCurrentHoldings([
-          { name: '股票A', value: 28, amount: 280, rateText: '28%' },
-          { name: '债券B', value: 22, amount: 220, rateText: '22%' },
-          { name: '基金C', value: 25, amount: 250, rateText: '25%' },
-          { name: '房产D', value: 20, amount: 200, rateText: '20%' },
-          { name: '现金E', value: 5, amount: 50, rateText: '5%' },
-        ]);
-        return;
-      }
-      
-      // 转换API数据为饼图格式
-      const totalValue = assetData.reduce((sum, asset) => sum + (asset.currentValue || 0), 0);
-      const formatted = assetData.map((item) => {
-          const percentage = Math.round(((item.currentValue || 0) / totalValue * 100) || 0); // 计算占比并取整
-          return {
-            name: item.name || '未知资产', // 资产名称
-            value: percentage, // 计算占比（%）已取整
-            amount: ((item.currentValue || 0) / 10000), // 转换为万美元
-            rateText: `${percentage}%`, // 占比文本（带%，整数显示）
-          };
-        });
-      setCurrentHoldings(formatted);
     } catch (error) {
       console.error('获取当前持仓失败:', error);
-      // 使用默认数据避免页面空白 - 重新分配比例使其更加均衡合理
-      setCurrentHoldings([
-        { name: '股票A', value: 28, amount: 280, rateText: '28%' },
-        { name: '债券B', value: 22, amount: 220, rateText: '22%' },
-        { name: '基金C', value: 25, amount: 250, rateText: '25%' },
-        { name: '房产D', value: 20, amount: 200, rateText: '20%' },
-        { name: '现金E', value: 5, amount: 50, rateText: '5%' },
-      ]);
+      setCurrentHoldings([]);
     }
   };
 
-  // 2. 获取历史持仓数据（使用模拟数据）
+  // 2. 获取历史持仓数据
   const fetchHistoryHoldings = async () => {
     try {
-      // 生成模拟的历史数据
-      const days = timeRange === '7days' ? 7 : 30;
-      const historyData = [];
-      for (let i = days - 1; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        const dateStr = `${date.getMonth() + 1}/${date.getDate()}`;
-        
-        // 生成有波动的模拟数据 - 使用更均衡的基准比例
-        historyData.push({
-          date: dateStr,
-          '股票A': 28 + Math.random() * 4 - 2,    // 28% ± 2%
-          '债券B': 22 + Math.random() * 3 - 1.5,  // 22% ± 1.5%
-          '基金C': 25 + Math.random() * 5 - 2.5,  // 25% ± 2.5%
-          '房产D': 20 + Math.random() * 4 - 2,    // 20% ± 2%
-          '现金E': 5 + Math.random() * 2 - 1      // 5% ± 1%
-        });
-      }
-      setHistoryHoldings(historyData);
+      // 实际应用中应调用API获取历史数据
+      // const response = await fetch(`/api/holdings/history?userId=${currentUser.id}&timeRange=${timeRange}`);
+      // const historyData = await response.json();
+      // setHistoryHoldings(historyData);
+      
+      // 暂时返回空数据
+      setHistoryHoldings([]);
     } catch (error) {
       console.error('获取历史持仓失败:', error);
+      setHistoryHoldings([]);
     }
   };
 
@@ -153,7 +122,7 @@ const AssetHoldings = () => {
   };
 
   return (
-    <div className="asset-holdings-page" style={{ padding: '24px' }}>
+    <div className="asset-holdings-page" style={{ padding: '40px 24px 24px' }}>
       {/* 页面标题栏（含筛选+导出） */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <Title level={4}>持仓数据管理</Title>

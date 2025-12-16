@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Button, Statistic, Space, message, Typography, Spin, Tooltip, List, Tag } from 'antd';
-import { BellOutlined, FileTextOutlined, WalletOutlined, ReloadOutlined, BarChartOutlined, FileOutlined, ArrowUpOutlined, ArrowDownOutlined, PieChartOutlined, ClockCircleOutlined, AlertOutlined, MessageOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { BellOutlined, FileTextOutlined, WalletOutlined, ReloadOutlined, BarChartOutlined, FileOutlined, ArrowUpOutlined as UpOutlined, ArrowDownOutlined as DownOutlined, PieChartOutlined, ClockCircleOutlined, AlertOutlined, MessageOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { fetchDashboardStats } from '../../services/dashboardService';
 import { getCurrentUser } from '../../services/authService';
@@ -17,39 +17,6 @@ const Dashboard = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  // 生成模拟数据
-  const generateMockDashboardData = () => ({
-    unreadMessages: 5,
-    pendingReports: 3,
-    totalAssetValue: 1586240.50,
-    recentActivities: [
-      {
-        id: 1,
-        type: 'message',
-        title: '比特币价格突破45000美元',
-        content: '比特币价格今日突破45000美元关口，创三个月新高',
-        time: '10分钟前',
-        status: 'unread'
-      },
-      {
-        id: 2,
-        type: 'report',
-        title: '以太坊技术分析报告',
-        content: 'AI生成的最新以太坊技术分析报告需要审核',
-        time: '30分钟前',
-        status: 'pending'
-      },
-      {
-        id: 3,
-        type: 'message',
-        title: 'DeFi协议安全事件提醒',
-        content: '某DeFi协议出现安全漏洞，建议关注相关资产',
-        time: '1小时前',
-        status: 'unread'
-      }
-    ]
-  });
-
   const loadDashboardData = async () => {
     setLoading(true);
     try {
@@ -63,16 +30,21 @@ const Dashboard = () => {
       const data = await fetchDashboardStats(currentUser.id);
       // 转换API数据格式以适应新的UI需求
       setDashboardData({
-        unreadMessages: data.unreadMessages || 5,
-        pendingReports: data.pendingReports || 3,
-        totalAssetValue: data.totalAssetValue || 1586240.50,
-        recentActivities: data.recentActivities || generateMockDashboardData().recentActivities
+        unreadMessages: data.unreadMessages || 0,
+        pendingReports: data.pendingReports || 0,
+        totalAssetValue: data.totalAssetValue || 0,
+        recentActivities: data.recentActivities || []
       });
     } catch (error) {
       console.error('获取仪表盘数据失败:', error);
       message.error('获取数据失败，请稍后重试');
-      // 使用模拟数据避免页面空白
-      setDashboardData(generateMockDashboardData());
+      // 使用空数据避免页面空白
+      setDashboardData({
+        unreadMessages: 0,
+        pendingReports: 0,
+        totalAssetValue: 0,
+        recentActivities: []
+      });
     } finally {
       setLoading(false);
     }
@@ -140,14 +112,13 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-page" style={{ minHeight: '100%' }}>
+    <div className="dashboard-page" style={{ minHeight: '100%', paddingTop: '40px' }}>
       {/* 页面标题栏（含刷新按钮） */}
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center', 
-        marginBottom: '32px',
-        padding: '24px 0 0 0'
+        marginBottom: '32px'
       }}>
         <div>
           <Title level={2} style={{ 

@@ -11,9 +11,11 @@ import {
   SettingOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
-  MenuUnfoldOutlined
+  MenuUnfoldOutlined,
+  LineChartOutlined
 } from '@ant-design/icons';
 import Dashboard from '../pages/Dashboard/Dashboard';
+import CryptoPriceRanking from '../pages/CryptoPriceRanking/CryptoPriceRanking';
 import AssetHoldings from '../pages/AssetHoldings/AssetHoldings';
 import MessageList from '../pages/MessageList/MessageList';
 import ReportList from '../pages/ReportList/ReportList';
@@ -55,11 +57,12 @@ const MainLayout = () => {
   // 获取当前路由对应的菜单key
   const getCurrentMenuKey = () => {
     const path = location.pathname;
+    if (path.includes('/crypto-prices')) return 'crypto-prices';
     if (path.includes('/dashboard')) return 'dashboard';
     if (path.includes('/asset-holdings')) return 'asset-holdings';
     if (path.includes('/message-list')) return 'message-list';
     if (path.includes('/report-list')) return 'report-list';
-    return 'dashboard';
+    return 'crypto-prices';
   };
 
   return (
@@ -122,6 +125,16 @@ const MainLayout = () => {
           className="main-menu"
           style={{ borderRight: 0, background: 'transparent' }}
           items={[
+            {
+              key: 'crypto-prices',
+              icon: <LineChartOutlined />,
+              label: '价格排行',
+              onClick: () => window.location.href = '/crypto-prices',
+              style: {
+                marginBottom: '4px',
+                borderRadius: 'var(--border-radius)'
+              }
+            },
             {
               key: 'dashboard',
               icon: <DashboardOutlined />,
@@ -236,9 +249,10 @@ const AppRouter = () => {
       <Route element={<AuthGuard />}>
         {/* 所有需要认证的页面都使用全局布局 */}
         <Route path="/" element={<MainLayout />}>
-          {/* 默认重定向到系统概览页 */}
-          <Route index element={<Navigate to="/dashboard" />} />
+          {/* 默认重定向到价格排行页 */}
+          <Route index element={<Navigate to="/crypto-prices" />} />
           {/* 前端开发A负责页面 */}
+          <Route path="crypto-prices" element={<CryptoPriceRanking />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="asset-holdings" element={<AssetHoldings />} />
           {/* 前端开发B负责页面 */}

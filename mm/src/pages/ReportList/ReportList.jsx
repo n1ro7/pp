@@ -13,51 +13,6 @@ const REPORT_STATUS = {
   REJECTED: 'rejected',
 };
 
-// 模拟报告数据
-const generateMockReports = () => {
-  const reports = [];
-  const now = new Date();
-  const cryptos = ['BTC', 'ETH', 'SOL', 'BNB', 'USDT'];
-  
-  for (let i = 0; i < 15; i++) {
-    const date = new Date(now);
-    date.setHours(date.getHours() - i * 4);
-    
-    const crypto = cryptos[Math.floor(Math.random() * cryptos.length)];
-    const isPositive = Math.random() > 0.4;
-    const status = i > 10 ? REPORT_STATUS.PENDING : 
-                   i > 5 ? REPORT_STATUS.APPROVED : REPORT_STATUS.REJECTED;
-    
-    let title, suggestion, message, confidence;
-    
-    if (isPositive) {
-      title = `建议增加 ${crypto} 持仓`;
-      suggestion = `基于最新市场数据分析，建议在未来7天内逐步增加${crypto}持仓比例。`;
-      message = `${crypto}价格在过去24小时内上涨了5.3%，交易量增加30%。技术指标显示MACD形成金叉，RSI处于58位置，表明短期上涨动能正在增强。同时，机构资金流入增加，市场情绪指标向好。`;
-      confidence = (75 + Math.random() * 20).toFixed(1);
-    } else {
-      title = `建议减少 ${crypto} 持仓`;
-      suggestion = `基于技术面和基本面分析，建议暂时减少${crypto}持仓，等待更好的入场时机。`;
-      message = `${crypto}近期价格波动加大，成交量萎缩，技术面出现顶背离信号。同时，行业监管政策趋严，可能对短期价格造成压力。`;
-      confidence = (65 + Math.random() * 25).toFixed(1);
-    }
-    
-    reports.push({
-      id: `report-${i + 1}`,
-      title,
-      coreSuggestion: suggestion,
-      originalMessage: message,
-      cryptoType: crypto,
-      confidence: confidence,
-      publishTime: date.toISOString(),
-      status,
-      analystNotes: i % 3 === 0 ? '此报告需要结合近期宏观经济数据进行综合考量。' : '',
-    });
-  }
-  
-  return reports.sort((a, b) => new Date(b.publishTime) - new Date(a.publishTime));
-};
-
 const ReportList = () => {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
@@ -72,8 +27,8 @@ const ReportList = () => {
   useEffect(() => {
     // 模拟数据加载延迟
     const timer = setTimeout(() => {
-      const mockData = generateMockReports();
-      setReports(mockData);
+      // 暂时返回空数据
+      setReports([]);
       setLoading(false);
     }, 1000);
 
@@ -146,7 +101,7 @@ const ReportList = () => {
   const pendingReportsCount = reports.filter(report => report.status === REPORT_STATUS.PENDING).length;
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div style={{ padding: '40px 24px 24px' }}>
       <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Title level={4}>建议报告管理</Title>
         {pendingReportsCount > 0 && (
