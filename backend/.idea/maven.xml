@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MavenSettings">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="${user.home}/.m2/repository" />
+        <option name="mavenHome" value="" />
+        <option name="mavenExecutable" value="BUNDLED" />
+        <option name="mavenExecutablePath" value="" />
+        <option name="vmOptions" value="" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="userSettingsFile" value="${user.home}/.m2/settings.xml" />
+  </component>
+</project>

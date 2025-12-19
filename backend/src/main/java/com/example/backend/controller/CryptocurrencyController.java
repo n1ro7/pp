@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/cryptocurrencies")
+@RequestMapping({"/api/cryptocurrencies", "/api/crypto/prices"})
 public class CryptocurrencyController {
 
     private final CryptocurrencyService cryptocurrencyService;
@@ -21,9 +21,15 @@ public class CryptocurrencyController {
 
     // 获取所有加密货币
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllCryptocurrencies() {
+    public ResponseEntity<Map<String, Object>> getAllCryptocurrencies(@RequestParam(required = false) Integer limit) {
         try {
-            List<Cryptocurrency> cryptocurrencies = cryptocurrencyService.getAllCryptocurrencies();
+            // 强制重新从硬编码数据填充，确保所有字段都有值
+            List<Cryptocurrency> cryptocurrencies = cryptocurrencyService.fetchAndSaveCryptocurrencyDataWithHardcoded();
+            
+            // 如果指定了limit参数，只返回前limit条数据
+            if (limit != null && limit > 0) {
+                cryptocurrencies = cryptocurrencies.subList(0, Math.min(limit, cryptocurrencies.size()));
+            }
             
             Map<String, Object> response = new HashMap<>();
             response.put("code", 200);
@@ -41,7 +47,7 @@ public class CryptocurrencyController {
     }
 
     // 根据Symbol获取加密货币
-    @GetMapping("/symbol/{symbol}")
+    @GetMapping({"/symbol/{symbol}", "/{symbol}"})
     public ResponseEntity<Map<String, Object>> getCryptocurrencyBySymbol(@PathVariable String symbol) {
         try {
             Cryptocurrency cryptocurrency = cryptocurrencyService.getCryptocurrencyBySymbol(symbol);

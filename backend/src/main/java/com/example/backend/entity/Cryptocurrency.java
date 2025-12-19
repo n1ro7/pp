@@ -23,7 +23,7 @@ public class Cryptocurrency {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String symbol;
 
     @Column(nullable = false, precision = 18, scale = 6)
@@ -31,6 +31,15 @@ public class Cryptocurrency {
 
     @Column(name = "price_currency", nullable = false, length = 10)
     private String priceCurrency;
+
+    @Column(name = "market_cap", precision = 24, scale = 6)
+    private BigDecimal marketCap;
+
+    @Column(name = "change_24h", precision = 10, scale = 4)
+    private BigDecimal change24h;
+
+    @Column(name = "volume_24h", precision = 24, scale = 6)
+    private BigDecimal volume24h;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate

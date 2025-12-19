@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectJdkTable">
+    <jdk version="2">
+      <name value="17" />
+      <type value="JavaSDK" />
+      <version value="17" />
+      <homePath value="$USER_HOME$/.jdks/corretto-17.0.10" />
+      <roots>
+        <classPath>
+          <root type="com.intellij.openapi.roots.JdkOrderRootType" url="jdk://$USER_HOME$/.jdks/corretto-17.0.10/lib" />
+        </classPath>
+        <sourcePath>
+          <root type="com.intellij.openapi.roots.JdkOrderRootType" url="jdk://$USER_HOME$/.jdks/corretto-17.0.10/lib/src.zip" />
+        </sourcePath>
+      </roots>
+      <additional>
+        <libraryLevelSettings>
+          <entry name="gradle-wrapper-api">
+            <preferCore>true</preferCore>
+          </entry>
+        </libraryLevelSettings>
+      </additional>
+    </jdk>
+  </component>
+</project>

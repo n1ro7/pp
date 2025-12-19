@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1c1f75a7-4299-453e-83a2-c29d1beb0a88" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/CryptocurrencyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/CryptocurrencyController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/entity/Cryptocurrency.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/entity/Cryptocurrency.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/repository/CryptocurrencyRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/repository/CryptocurrencyRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/service/BCryptPasswordEncoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/service/CryptocurrencyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/service/CryptocurrencyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Asset.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Asset.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/AssetHistory.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/AssetHistory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Message.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/OperationLog.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/OperationLog.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Report.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Report.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/SystemSettings.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/SystemSettings.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/UserMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/UserMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/BCryptPasswordEncoder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../database.sql" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="372rUP6Lp8LKcxLXV4JLrpMA5GZ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.BackendApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="backend" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.backend.BackendApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="1c1f75a7-4299-453e-83a2-c29d1beb0a88" name="更改" comment="" />
+      <created>1766112025357</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1766112025357</updated>
+      <workItem from="1766112026590" duration="878000" />
+      <workItem from="1766112929389" duration="3091000" />
+      <workItem from="1766123051449" duration="1184000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

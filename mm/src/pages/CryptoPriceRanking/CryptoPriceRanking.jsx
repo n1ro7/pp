@@ -11,6 +11,10 @@ const CryptoPriceRanking = () => {
   const [totalMarketCap, setTotalMarketCap] = useState(0);
   const [gainersCount, setGainersCount] = useState(0);
   const [losersCount, setLosersCount] = useState(0);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 15
+  });
 
   // 加载数据
   const loadCryptoData = async () => {
@@ -59,26 +63,30 @@ const CryptoPriceRanking = () => {
   const columns = [
     {
       title: '排名',
-      dataIndex: 'id',
-      key: 'id',
+      key: 'rank',
       width: 80,
       align: 'center',
-      render: (text, record) => (
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center',
-          width: '36px',
-          height: '36px',
-          borderRadius: '50%',
-          background: record.id <= 3 ? '#f0f5ff' : '#fafafa',
-          color: record.id <= 3 ? '#1890ff' : '#666',
-          fontWeight: 'bold',
-          fontSize: '16px'
-        }}>
-          {text}
-        </div>
-      )
+      render: (text, record, index) => {
+        // 使用pagination state中的当前页码和每页数量计算排名
+        const { current, pageSize } = pagination;
+        const rank = (current - 1) * pageSize + index + 1;
+        return (
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            width: '36px',
+            height: '36px',
+            borderRadius: '50%',
+            background: rank <= 3 ? '#f0f5ff' : '#fafafa',
+            color: rank <= 3 ? '#1890ff' : '#666',
+            fontWeight: 'bold',
+            fontSize: '16px'
+          }}>
+            {rank}
+          </div>
+        );
+      }
     },
     {
       title: '名称',
@@ -380,7 +388,7 @@ const CryptoPriceRanking = () => {
             dataSource={cryptoData}
             rowKey="id"
             pagination={{ 
-              pageSize: 15, 
+              ...pagination,
               showSizeChanger: true, 
               showTotal: (total) => `共 ${total} 种币种`,
               pageSizeOptions: ['10', '15', '20', '50'],
@@ -430,6 +438,9 @@ const CryptoPriceRanking = () => {
                 e.currentTarget.style.background = '';
               }
             })}
+            onChange={(pagination) => {
+              setPagination(pagination);
+            }}
           />
         </Spin>
       </Card>
