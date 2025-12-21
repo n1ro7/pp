@@ -93,3 +93,16 @@ export const fetchAssetStats = async (userId) => {
     throw error;
   }
 };
+
+// 批量更新资产当前价值和占比数据
+export const batchUpdateAssetValues = async (assetValues) => {
+  try {
+    const response = await request.post('/assets/batch-update', assetValues, { 
+      noLoading: false
+    });
+    return response;
+  } catch (error) {
+    console.error('批量更新资产价值失败:', error);
+    throw error;
+  }
+};

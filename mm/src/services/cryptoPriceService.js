@@ -26,3 +26,27 @@ export const fetchCryptoPriceDetail = async (symbol) => {
     return null;
   }
 };
+
+// 更新单个数字货币价格
+export const updateCryptocurrencyPrice = async (symbol, price) => {
+  try {
+    const response = await request.put(`/crypto/prices/${symbol}`, {
+      price
+    });
+    return response;
+  } catch (error) {
+    console.error(`更新${symbol}价格失败:`, error);
+    throw error;
+  }
+};
+
+// 批量更新数字货币价格
+export const batchUpdateCryptocurrencyPrices = async (updateDataList) => {
+  try {
+    const response = await request.put(`/crypto/prices/batch`, updateDataList);
+    return response;
+  } catch (error) {
+    console.error('批量更新价格失败:', error);
+    throw error;
+  }
+};

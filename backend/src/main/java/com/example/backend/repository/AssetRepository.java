@@ -12,4 +12,5 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
     List<Asset> findByUser(User user);
     List<Asset> findByUserId(Long userId);
     List<Asset> findByUserAndType(User user, String type);
+    List<Asset> findByCryptoType(String cryptoType);
 }

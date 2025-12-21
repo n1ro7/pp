@@ -5,6 +5,7 @@ import com.example.backend.service.CryptocurrencyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +105,53 @@ public class CryptocurrencyController {
             Map<String, Object> response = new HashMap<>();
             response.put("code", 404);
             response.put("message", e.getMessage());
+            
+            return ResponseEntity.ok(response);
+        }
+    }
+    
+    // 更新单个加密货币价格
+    @PutMapping("/{symbol}")
+    public ResponseEntity<Map<String, Object>> updateCryptocurrencyPrice(@PathVariable String symbol, @RequestBody Map<String, Object> requestBody) {
+        try {
+            // 从请求体中获取价格
+            BigDecimal price = new BigDecimal(requestBody.get("price").toString());
+            
+            // 更新价格
+            Cryptocurrency updatedCryptocurrency = cryptocurrencyService.updateCryptocurrencyPrice(symbol, price);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 200);
+            response.put("message", "价格更新成功");
+            response.put("data", updatedCryptocurrency);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 500);
+            response.put("message", "价格更新失败: " + e.getMessage());
+            
+            return ResponseEntity.ok(response);
+        }
+    }
+    
+    // 批量更新加密货币价格
+    @PutMapping("/batch")
+    public ResponseEntity<Map<String, Object>> batchUpdateCryptocurrencyPrices(@RequestBody List<Map<String, Object>> requestBody) {
+        try {
+            // 调用服务层方法批量更新价格
+            List<Cryptocurrency> updatedCryptocurrencies = cryptocurrencyService.batchUpdateCryptocurrencyPrices(requestBody);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 200);
+            response.put("message", "批量价格更新成功");
+            response.put("data", updatedCryptocurrencies);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 500);
+            response.put("message", "批量价格更新失败: " + e.getMessage());
             
             return ResponseEntity.ok(response);
         }

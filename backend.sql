@@ -60,11 +60,13 @@ CREATE TABLE `assets`  (
   INDEX `idx_assets_type`(`type` ASC) USING BTREE,
   INDEX `idx_assets_crypto_type`(`crypto_type` ASC) USING BTREE,
   CONSTRAINT `assets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;-- ----------------------------
 -- Records of assets
 -- ----------------------------
+INSERT INTO `assets` VALUES (1, 1, 'BTC', '加密货币', 66.666667, 60000.000000, 4000000.000000, 60000.000000, 0.00, 'BTC', '2025-12-16 08:21:47', '2025-12-16 08:21:47');
+INSERT INTO `assets` VALUES (2, 1, 'ETH', '加密货币', 1750.000000, 2000.000000, 3500000.000000, 2000.000000, 0.00, 'ETH', '2025-12-16 08:21:47', '2025-12-16 08:21:47');
+INSERT INTO `assets` VALUES (3, 1, 'SOL', '加密货币', 15000.000000, 100.000000, 1500000.000000, 100.000000, 0.00, 'SOL', '2025-12-16 08:21:47', '2025-12-16 08:21:47');
+INSERT INTO `assets` VALUES (4, 1, 'USDT', '加密货币', 1000000.000000, 1.000000, 1000000.000000, 1.000000, 0.00, 'USDT', '2025-12-16 08:21:47', '2025-12-16 08:21:47');
 
 -- ----------------------------
 -- Table structure for cryptocurrencies

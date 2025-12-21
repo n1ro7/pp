@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Tabs, Form, Input, Select, Button, Switch, message, Modal, Space, Table, Spin, Typography } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, SettingOutlined, UserOutlined, ReloadOutlined, SearchOutlined, KeyOutlined, AuditOutlined, EyeOutlined } from '@ant-design/icons';
+import { Card, Tabs, Form, Input, Select, Button, Switch, message, Modal, Space, Table, Spin, Typography, InputNumber } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, SettingOutlined, UserOutlined, ReloadOutlined, SearchOutlined, KeyOutlined, AuditOutlined, EyeOutlined, DollarOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 import { useSettings } from '../../contexts/SettingsContext';
+import { usePrice } from '../../contexts/PriceContext';
 import { addUser, getUsers, updateUser, deleteUser, resetPassword, getOperationLogs, getSystemSettings, updateSystemSettings } from '../../services/adminService';
+import { fetchCryptoPriceRanking, batchUpdateCryptocurrencyPrices } from '../../services/cryptoPriceService';
 import { useNavigate } from 'react-router-dom';
 import { t } from '../../utils/i18n';
 import './Admin.css';
@@ -49,6 +51,11 @@ const Admin = () => {
   // 日志详情模态框
   const [logDetailsVisible, setLogDetailsVisible] = useState(false);
   const [selectedLog, setSelectedLog] = useState(null);
+  // 价格管理相关状态
+  const { priceData, refreshPriceData } = usePrice();
+  const [cryptocurrencies, setCryptocurrencies] = useState([]);
+  const [cryptoLoading, setCryptoLoading] = useState(false);
+  const [editableCells, setEditableCells] = useState({});
 
   // 获取用户列表
   const fetchUsers = async () => {
@@ -105,6 +112,71 @@ const Admin = () => {
       fetchSystemSettings();
     }
   }, [activeTab]);
+
+  // 获取加密货币列表
+  const fetchCryptocurrencies = async () => {
+    setCryptoLoading(true);
+    try {
+      const data = await fetchCryptoPriceRanking(50);
+      setCryptocurrencies(data);
+      // 重置可编辑单元格状态
+      setEditableCells({});
+    } catch (error) {
+      message.error('获取加密货币列表失败');
+      console.error('获取加密货币列表失败:', error);
+    } finally {
+      setCryptoLoading(false);
+    }
+  };
+
+  // 当切换到prices标签页时，获取加密货币列表
+  useEffect(() => {
+    if (activeTab === 'prices') {
+      fetchCryptocurrencies();
+    }
+  }, [activeTab]);
+
+  // 处理价格变化
+  const handlePriceChange = (record, price) => {
+    setEditableCells(prev => ({
+      ...prev,
+      [record.symbol]: price
+    }));
+  };
+
+  // 保存修改后的价格
+  const handleSavePrices = async () => {
+    // 检查是否有修改
+    if (Object.keys(editableCells).length === 0) {
+      message.info('没有修改任何价格');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // 准备更新数据
+      const updateDataList = Object.entries(editableCells).map(([symbol, price]) => ({
+        symbol,
+        price
+      }));
+
+      // 调用批量更新API
+      await batchUpdateCryptocurrencyPrices(updateDataList);
+
+      // 刷新价格数据
+      await refreshPriceData();
+      await fetchCryptocurrencies();
+
+      message.success('价格更新成功');
+      // 重置可编辑单元格状态
+      setEditableCells({});
+    } catch (error) {
+      message.error('价格更新失败');
+      console.error('价格更新失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // 保存系统设置
   const handleSettingsFormSubmit = async (values) => {
@@ -447,6 +519,82 @@ const Admin = () => {
     );
   };
 
+  // 价格管理表格列配置
+  const priceColumns = [
+    {
+      title: '名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 120
+    },
+    {
+      title: '代码',
+      dataIndex: 'symbol',
+      key: 'symbol',
+      width: 80
+    },
+    {
+      title: '当前价格',
+      dataIndex: 'price',
+      key: 'price',
+      width: 150,
+      render: (price, record) => {
+        const isEditing = editableCells[record.symbol] !== undefined;
+        const currentPrice = isEditing ? editableCells[record.symbol] : price;
+        
+        return (
+          <InputNumber
+            value={currentPrice}
+            onChange={(value) => handlePriceChange(record, value)}
+            style={{ width: '100%' }}
+            formatter={value => `${value}`}
+            parser={value => value.replace(/,/g, '')}
+            precision={2}
+            min={0}
+          />
+        );
+      }
+    },
+    {
+      title: '价格货币',
+      dataIndex: 'price_currency',
+      key: 'price_currency',
+      width: 100
+    },
+    {
+      title: '市值',
+      dataIndex: 'market_cap',
+      key: 'market_cap',
+      width: 150,
+      render: (marketCap) => {
+        return marketCap ? marketCap.toLocaleString() : '-';
+      }
+    },
+    {
+      title: '24h涨幅',
+      dataIndex: 'change_24h',
+      key: 'change_24h',
+      width: 100,
+      render: (change) => {
+        const color = change > 0 ? '#52c41a' : change < 0 ? '#ff4d4f' : '#8c8c8c';
+        return (
+          <span style={{ color }}>
+            {change > 0 ? '+' : ''}{change}%
+          </span>
+        );
+      }
+    },
+    {
+      title: '24h成交量',
+      dataIndex: 'volume_24h',
+      key: 'volume_24h',
+      width: 150,
+      render: (volume) => {
+        return volume ? volume.toLocaleString() : '-';
+      }
+    }
+  ];
+
   // 定义Tabs的items
   const tabItems = [
     {
@@ -509,6 +657,43 @@ const Admin = () => {
               }}
               size="middle"
             />
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'prices',
+      label: <span><DollarOutlined /> 价格管理</span>,
+      children: (
+        <div className="prices-section">
+          <div className="section-header">
+            <h3>加密货币价格管理</h3>
+            <Space>
+              <Button type="primary" onClick={handleSavePrices} loading={loading}>
+                保存修改
+              </Button>
+              <Button icon={<ReloadOutlined />} onClick={fetchCryptocurrencies} loading={cryptoLoading}>
+                刷新列表
+              </Button>
+            </Space>
+          </div>
+          
+          <div className="prices-table">
+            <Card>
+              <Table
+                columns={priceColumns}
+                dataSource={cryptocurrencies}
+                rowKey="symbol"
+                loading={cryptoLoading}
+                pagination={{
+                  showSizeChanger: true,
+                  showTotal: total => `共 ${total} 条记录`,
+                  pageSizeOptions: ['10', '20', '50', '100'],
+                  defaultPageSize: 20
+                }}
+                size="middle"
+              />
+            </Card>
           </div>
         </div>
       )

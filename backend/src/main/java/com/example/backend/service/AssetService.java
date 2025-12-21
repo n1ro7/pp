@@ -17,10 +17,11 @@ public class AssetService {
     @Autowired
     private AssetRepository assetRepository;
 
-    // 获取用户的所有资产
+    // 获取用户的所有资产，并自动更新价格和相关计算
     public List<Asset> getAllAssets(Long userId) {
-        // 暂时返回空列表，实际项目中应根据userId查询
-        return assetRepository.findAll();
+        List<Asset> assets = assetRepository.findByUserId(userId);
+        
+        return assets;
     }
 
     // 根据资产类型获取资产
@@ -42,13 +43,30 @@ public class AssetService {
         Asset existingAsset = assetRepository.findById(asset.getId())
                 .orElseThrow(() -> new RuntimeException("资产不存在"));
         
-        existingAsset.setName(asset.getName());
-        existingAsset.setType(asset.getType());
-        existingAsset.setQuantity(asset.getQuantity());
-        existingAsset.setPrice(asset.getPrice());
-        existingAsset.setCurrentValue(asset.getCurrentValue());
-        existingAsset.setCostPrice(asset.getCostPrice());
-        existingAsset.setCryptoType(asset.getCryptoType());
+        // 只更新前端传递的字段，保留原有字段的值
+        if (asset.getName() != null) {
+            existingAsset.setName(asset.getName());
+        }
+        if (asset.getType() != null) {
+            existingAsset.setType(asset.getType());
+        }
+        if (asset.getQuantity() != null) {
+            existingAsset.setQuantity(asset.getQuantity());
+        }
+        if (asset.getPrice() != null) {
+            existingAsset.setPrice(asset.getPrice());
+        }
+        if (asset.getCurrentValue() != null) {
+            existingAsset.setCurrentValue(asset.getCurrentValue());
+        }
+        if (asset.getCostPrice() != null) {
+            existingAsset.setCostPrice(asset.getCostPrice());
+        }
+        if (asset.getCryptoType() != null) {
+            existingAsset.setCryptoType(asset.getCryptoType());
+        }
+        // 不更新user字段，保留原有值，避免user_id为null
+        // existingAsset.setUser(asset.getUser());
         
         calculateProfitRate(existingAsset);
         
@@ -67,8 +85,8 @@ public class AssetService {
     }
 
     // 计算收益率
-    private void calculateProfitRate(Asset asset) {
-        if (asset.getCostPrice().compareTo(BigDecimal.ZERO) > 0) {
+    public void calculateProfitRate(Asset asset) {
+        if (asset.getCostPrice() != null && asset.getCostPrice().compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal profit = asset.getCurrentValue().subtract(asset.getCostPrice().multiply(asset.getQuantity()));
             BigDecimal cost = asset.getCostPrice().multiply(asset.getQuantity());
             asset.setProfitRate(profit.divide(cost, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)));

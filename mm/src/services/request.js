@@ -34,17 +34,25 @@ request.interceptors.request.use(
 // 响应拦截器：处理错误
 request.interceptors.response.use(
   (response) => {
-    // 后端统一响应格式：{ code: 200(成功)/其他(失败), message: "提示", data: 业务数据 }
-    const { code, message: resMsg, data } = response.data;
-    if (code !== 200) {
-      message.error(resMsg || '操作失败，请稍后重试');
-      return Promise.reject(new Error(resMsg || '接口返回异常'));
+    try {
+      // 后端统一响应格式：{ code: 200(成功)/其他(失败), message: "提示", data: 业务数据 }
+      const { code, message: resMsg, data } = response.data;
+      if (code !== 200) {
+        message.error(resMsg || '操作失败，请稍后重试');
+        console.error('后端返回错误：', response.data);
+        return Promise.reject(new Error(resMsg || '接口返回异常'));
+      }
+      return data; // 直接返回业务数据，简化组件调用
+    } catch (error) {
+      message.error('响应格式错误，请检查后端接口');
+      console.error('响应格式错误：', response.data, error);
+      return Promise.reject(new Error('响应格式错误，请检查后端接口'));
     }
-    return data; // 直接返回业务数据，简化组件调用
   },
   (error) => {
-    const errorMsg = error.response?.data?.message || '服务器异常，请联系管理员';
+    const errorMsg = error.response?.data?.message || error.response?.data || '服务器异常，请联系管理员';
     message.error(errorMsg);
+    console.error('网络请求错误：', error);
     return Promise.reject(error);
   }
 );

@@ -1,7 +1,11 @@
 package com.example.backend.service;
 
 import com.example.backend.entity.Cryptocurrency;
+import com.example.backend.entity.Asset;
 import com.example.backend.repository.CryptocurrencyRepository;
+import com.example.backend.repository.AssetRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.example.backend.service.AssetService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -29,15 +34,21 @@ public class CryptocurrencyService {
     private final String difyApiKey;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final AssetRepository assetRepository;
+    private final AssetService assetService;
 
     public CryptocurrencyService(CryptocurrencyRepository cryptocurrencyRepository,
                                  @Value("${dify.api.url}") String difyApiUrl,
-                                 @Value("${dify.api.key}") String difyApiKey) {
+                                 @Value("${dify.api.key}") String difyApiKey,
+                                 AssetRepository assetRepository,
+                                 AssetService assetService) {
         this.cryptocurrencyRepository = cryptocurrencyRepository;
         this.difyApiUrl = difyApiUrl;
         this.difyApiKey = difyApiKey;
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper();
+        this.assetRepository = assetRepository;
+        this.assetService = assetService;
     }
 
     // 获取所有加密货币数据
@@ -133,7 +144,7 @@ public class CryptocurrencyService {
     public List<Cryptocurrency> fetchAndSaveCryptocurrencyDataWithHardcoded() {
         try {
             // 使用完整的45种加密货币数据，包含市值、24h涨幅和24h成交量字段
-            String jsonString = "[{\"name\":\"比特币\",\"symbol\":\"BTC\",\"price\":605828.06,\"price_currency\":\"CNY\",\"market_cap\":11830000000000,\"change_24h\":2.34,\"volume_24h\":125000000000},{\"name\":\"以太币\",\"symbol\":\"ETH\",\"price\":20820.10,\"price_currency\":\"CNY\",\"market_cap\":2490000000000,\"change_24h\":-1.56,\"volume_24h\":85000000000},{\"name\":\"泰达币\",\"symbol\":\"USDT\",\"price\":7.04,\"price_currency\":\"CNY\",\"market_cap\":1050000000000,\"change_24h\":0.01,\"volume_24h\":250000000000},{\"name\":\"币安币\",\"symbol\":\"BNB\",\"price\":6027.10,\"price_currency\":\"CNY\",\"market_cap\":960000000000,\"change_24h\":3.78,\"volume_24h\":12000000000},{\"name\":\"瑞波币\",\"symbol\":\"XRP\",\"price\":13.30,\"price_currency\":\"CNY\",\"market_cap\":720000000000,\"change_24h\":5.21,\"volume_24h\":35000000000},{\"name\":\"美元币\",\"symbol\":\"USDC\",\"price\":7.04,\"price_currency\":\"CNY\",\"market_cap\":580000000000,\"change_24h\":0.02,\"volume_24h\":180000000000},{\"name\":\"Solana\",\"symbol\":\"SOL\",\"price\":895.20,\"price_currency\":\"CNY\",\"market_cap\":460000000000,\"change_24h\":-2.89,\"volume_24h\":42000000000},{\"name\":\"波场币\",\"symbol\":\"TRX\",\"price\":1.96,\"price_currency\":\"CNY\",\"market_cap\":120000000000,\"change_24h\":1.45,\"volume_24h\":8000000000},{\"name\":\"狗狗币\",\"symbol\":\"DOGE\",\"price\":0.9113,\"price_currency\":\"CNY\",\"market_cap\":126000000000,\"change_24h\":-0.78,\"volume_24h\":6500000000},{\"name\":\"艾达币\",\"symbol\":\"ADA\",\"price\":2.72,\"price_currency\":\"CNY\",\"market_cap\":92000000000,\"change_24h\":4.32,\"volume_24h\":15000000000},{\"name\":\"比特币现金\",\"symbol\":\"BCH\",\"price\":3788.70,\"price_currency\":\"CNY\",\"market_cap\":78000000000,\"change_24h\":-0.34,\"volume_24h\":4800000000},{\"name\":\"Hyperliquid\",\"symbol\":\"HYPE\",\"price\":192.65,\"price_currency\":\"CNY\",\"market_cap\":65000000000,\"change_24h\":2.15,\"volume_24h\":3200000000},{\"name\":\"Chainlink\",\"symbol\":\"LINK\",\"price\":90.32,\"price_currency\":\"CNY\",\"market_cap\":48000000000,\"change_24h\":-1.23,\"volume_24h\":2100000000},{\"name\":\"UNUS SED LEO\",\"symbol\":\"LEO\",\"price\":65.07,\"price_currency\":\"CNY\",\"market_cap\":45000000000,\"change_24h\":0.89,\"volume_24h\":1800000000},{\"name\":\"Monero\",\"symbol\":\"XMR\",\"price\":2869.88,\"price_currency\":\"CNY\",\"market_cap\":52000000000,\"change_24h\":3.45,\"volume_24h\":2800000000},{\"name\":\"莱特币\",\"symbol\":\"LTC\",\"price\":3850.50,\"price_currency\":\"CNY\",\"market_cap\":21000000000,\"change_24h\":-0.56,\"volume_24h\":1500000000},{\"name\":\"Polkadot\",\"symbol\":\"DOT\",\"price\":205.80,\"price_currency\":\"CNY\",\"market_cap\":28000000000,\"change_24h\":1.78,\"volume_24h\":1900000000},{\"name\":\"Cardano\",\"symbol\":\"ADA\",\"price\":2.72,\"price_currency\":\"CNY\",\"market_cap\":92000000000,\"change_24h\":4.32,\"volume_24h\":1500000000},{\"name\":\"Stellar\",\"symbol\":\"XLM\",\"price\":4.20,\"price_currency\":\"CNY\",\"market_cap\":18000000000,\"change_24h\":-2.11,\"volume_24h\":800000000},{\"name\":\"Avalanche\",\"symbol\":\"AVAX\",\"price\":235.60,\"price_currency\":\"CNY\",\"market_cap\":26000000000,\"change_24h\":5.67,\"volume_24h\":2200000000},{\"name\":\"Shiba Inu\",\"symbol\":\"SHIB\",\"price\":0.000035,\"price_currency\":\"CNY\",\"market_cap\":19000000000,\"change_24h\":-1.89,\"volume_24h\":1100000000},{\"name\":\"DogeCoin\",\"symbol\":\"DOGE\",\"price\":0.9113,\"price_currency\":\"CNY\",\"market_cap\":126000000000,\"change_24h\":-0.78,\"volume_24h\":6500000000},{\"name\":\"Polygon\",\"symbol\":\"MATIC\",\"price\":28.50,\"price_currency\":\"CNY\",\"market_cap\":17000000000,\"change_24h\":2.34,\"volume_24h\":900000000},{\"name\":\"Binance USD\",\"symbol\":\"BUSD\",\"price\":7.03,\"price_currency\":\"CNY\",\"market_cap\":12000000000,\"change_24h\":0.05,\"volume_24h\":500000000},{\"name\":\"Terra\",\"symbol\":\"LUNA\",\"price\":125.40,\"price_currency\":\"CNY\",\"market_cap\":15000000000,\"change_24h\":-3.21,\"volume_24h\":700000000},{\"name\":\"Cosmos\",\"symbol\":\"ATOM\",\"price\":120.60,\"price_currency\":\"CNY\",\"market_cap\":16000000000,\"change_24h\":1.45,\"volume_24h\":800000000},{\"name\":\"Aptos\",\"symbol\":\"APT\",\"price\":320.50,\"price_currency\":\"CNY\",\"market_cap\":21000000000,\"change_24h\":4.78,\"volume_24h\":1300000000},{\"name\":\"Near Protocol\",\"symbol\":\"NEAR\",\"price\":65.80,\"price_currency\":\"CNY\",\"market_cap\":14000000000,\"change_24h\":-0.98,\"volume_24h\":600000000},{\"name\":\"Algorand\",\"symbol\":\"ALGO\",\"price\":18.20,\"price_currency\":\"CNY\",\"market_cap\":12000000000,\"change_24h\":2.12,\"volume_24h\":400000000},{\"name\":\"Internet Computer\",\"symbol\":\"ICP\",\"price\":285.60,\"price_currency\":\"CNY\",\"market_cap\":18000000000,\"change_24h\":-1.67,\"volume_24h\":900000000},{\"name\":\"Filecoin\",\"symbol\":\"FIL\",\"price\":225.30,\"price_currency\":\"CNY\",\"market_cap\":15000000000,\"change_24h\":3.45,\"volume_24h\":700000000},{\"name\":\"VeChain\",\"symbol\":\"VET\",\"price\":1.85,\"price_currency\":\"CNY\",\"market_cap\":11000000000,\"change_24h\":-0.45,\"volume_24h\":300000000},{\"name\":\"TRON\",\"symbol\":\"TRX\",\"price\":1.96,\"price_currency\":\"CNY\",\"market_cap\":120000000000,\"change_24h\":1.45,\"volume_24h\":8000000000},{\"name\":\"EOS\",\"symbol\":\"EOS\",\"price\":35.60,\"price_currency\":\"CNY\",\"market_cap\":13000000000,\"change_24h\":-2.34,\"volume_24h\":500000000},{\"name\":\"Tezos\",\"symbol\":\"XTZ\",\"price\":52.80,\"price_currency\":\"CNY\",\"market_cap\":10000000000,\"change_24h\":0.78,\"volume_24h\":300000000},{\"name\":\"IOTA\",\"symbol\":\"MIOTA\",\"price\":12.30,\"price_currency\":\"CNY\",\"market_cap\":9500000000,\"change_24h\":1.23,\"volume_24h\":250000000},{\"name\":\"Dash\",\"symbol\":\"DASH\",\"price\":1250.80,\"price_currency\":\"CNY\",\"market_cap\":11000000000,\"change_24h\":-0.56,\"volume_24h\":350000000},{\"name\":\"Zcash\",\"symbol\":\"ZEC\",\"price\":650.30,\"price_currency\":\"CNY\",\"market_cap\":8500000000,\"change_24h\":2.78,\"volume_24h\":200000000},{\"name\":\"Decred\",\"symbol\":\"DCR\",\"price\":325.60,\"price_currency\":\"CNY\",\"market_cap\":7200000000,\"change_24h\":-1.89,\"volume_24h\":150000000},{\"name\":\"Storj\",\"symbol\":\"STORJ\",\"price\":18.50,\"price_currency\":\"CNY\",\"market_cap\":6800000000,\"change_24h\":3.12,\"volume_24h\":120000000},{\"name\":\"Siacoin\",\"symbol\":\"SC\",\"price\":0.085,\"price_currency\":\"CNY\",\"market_cap\":5200000000,\"change_24h\":-0.98,\"volume_24h\":80000000},{\"name\":\"NEM\",\"symbol\":\"XEM\",\"price\":5.20,\"price_currency\":\"CNY\",\"market_cap\":4800000000,\"change_24h\":1.56,\"volume_24h\":60000000}]";
+            String jsonString = "[{\"name\":\"比特币\",\"symbol\":\"BTC\",\"price\":605828.06,\"price_currency\":\"CNY\",\"market_cap\":11830000000000,\"change_24h\":2.34,\"volume_24h\":125000000000},{\"name\":\"以太币\",\"symbol\":\"ETH\",\"price\":20820.10,\"price_currency\":\"CNY\",\"market_cap\":2490000000000,\"change_24h\":-1.56,\"volume_24h\":85000000000},{\"name\":\"泰达币\",\"symbol\":\"USDT\",\"price\":7.04,\"price_currency\":\"CNY\",\"market_cap\":1050000000000,\"change_24h\":0.01,\"volume_24h\":250000000000},{\"name\":\"币安币\",\"symbol\":\"BNB\",\"price\":6027.10,\"price_currency\":\"CNY\",\"market_cap\":960000000000,\"change_24h\":3.78,\"volume_24h\":12000000000},{\"name\":\"瑞波币\",\"symbol\":\"XRP\",\"price\":13.30,\"price_currency\":\"CNY\",\"market_cap\":720000000000,\"change_24h\":5.21,\"volume_24h\":35000000000},{\"name\":\"美元币\",\"symbol\":\"USDC\",\"price\":7.04,\"price_currency\":\"CNY\",\"market_cap\":580000000000,\"change_24h\":0.02,\"volume_24h\":180000000000},{\"name\":\"Solana\",\"symbol\":\"SOL\",\"price\":895.20,\"price_currency\":\"CNY\",\"market_cap\":460000000000,\"change_24h\":-2.89,\"volume_24h\":42000000000},{\"name\":\"波场币\",\"symbol\":\"TRX\",\"price\":1.96,\"price_currency\":\"CNY\",\"market_cap\":120000000000,\"change_24h\":1.45,\"volume_24h\":8000000000},{\"name\":\"狗狗币\",\"symbol\":\"DOGE\",\"price\":0.9113,\"price_currency\":\"CNY\",\"market_cap\":126000000000,\"change_24h\":-0.78,\"volume_24h\":6500000000},{\"name\":\"艾达币\",\"symbol\":\"ADA\",\"price\":2.72,\"price_currency\":\"CNY\",\"market_cap\":92000000000,\"change_24h\":4.32,\"volume_24h\":15000000000},{\"name\":\"比特币现金\",\"symbol\":\"BCH\",\"price\":3788.70,\"price_currency\":\"CNY\",\"market_cap\":78000000000,\"change_24h\":-0.34,\"volume_24h\":4800000000},{\"name\":\"Hyperliquid\",\"symbol\":\"HYPE\",\"price\":192.65,\"price_currency\":\"CNY\",\"market_cap\":65000000000,\"change_24h\":2.15,\"volume_24h\":3200000000},{\"name\":\"Chainlink\",\"symbol\":\"LINK\",\"price\":90.32,\"price_currency\":\"CNY\",\"market_cap\":58000000000,\"change_24h\":-1.23,\"volume_24h\":8500000000},{\"name\":\"莱特币\",\"symbol\":\"LTC\",\"price\":2488.50,\"price_currency\":\"CNY\",\"market_cap\":52000000000,\"change_24h\":3.67,\"volume_24h\":6800000000},{\"name\":\"Polkadot\",\"symbol\":\"DOT\",\"price\":28.50,\"price_currency\":\"CNY\",\"market_cap\":45000000000,\"change_24h\":-0.89,\"volume_24h\":5200000000},{\"name\":\"Toncoin\",\"symbol\":\"TON\",\"price\":234.50,\"price_currency\":\"CNY\",\"market_cap\":42000000000,\"change_24h\":4.56,\"volume_24h\":7800000000},{\"name\":\"Filecoin\",\"symbol\":\"FIL\",\"price\":385.20,\"price_currency\":\"CNY\",\"market_cap\":38000000000,\"change_24h\":-2.34,\"volume_24h\":4500000000},{\"name\":\"Cosmos\",\"symbol\":\"ATOM\",\"price\":128.40,\"price_currency\":\"CNY\",\"market_cap\":36000000000,\"change_24h\":1.78,\"volume_24h\":6200000000},{\"name\":\"Stellar\",\"symbol\":\"XLM\",\"price\":5.67,\"price_currency\":\"CNY\",\"market_cap\":32000000000,\"change_24h\":-0.56,\"volume_24h\":3800000000},{\"name\":\"Avalanche\",\"symbol\":\"AVAX\",\"price\":198.30,\"price_currency\":\"CNY\",\"market_cap\":30000000000,\"change_24h\":2.90,\"volume_24h\":5800000000},{\"name\":\"Monero\",\"symbol\":\"XMR\",\"price\":1756.20,\"price_currency\":\"CNY\",\"market_cap\":28000000000,\"change_24h\":-1.34,\"volume_24h\":4200000000},{\"name\":\"Cardano\",\"symbol\":\"ADA\",\"price\":2.72,\"price_currency\":\"CNY\",\"market_cap\":92000000000,\"change_24h\":4.32,\"volume_24h\":15000000000},{\"name\":\"Polygon\",\"symbol\":\"MATIC\",\"price\":6.89,\"price_currency\":\"CNY\",\"market_cap\":78000000000,\"change_24h\":-0.67,\"volume_24h\":8500000000},{\"name\":\"DogeCoin\",\"symbol\":\"DOGE\",\"price\":0.9113,\"price_currency\":\"CNY\",\"market_cap\":126000000000,\"change_24h\":-0.78,\"volume_24h\":6500000000},{\"name\":\"Solana\",\"symbol\":\"SOL\",\"price\":895.20,\"price_currency\":\"CNY\",\"market_cap\":460000000000,\"change_24h\":-2.89,\"volume_24h\":42000000000},{\"name\":\"Polkadot\",\"symbol\":\"DOT\",\"price\":28.50,\"price_currency\":\"CNY\",\"market_cap\":45000000000,\"change_24h\":-0.89,\"volume_24h\":5200000000},{\"name\":\"Avalanche\",\"symbol\":\"AVAX\",\"price\":198.30,\"price_currency\":\"CNY\",\"market_cap\":30000000000,\"change_24h\":2.90,\"volume_24h\":5800000000},{\"name\":\"Cosmos\",\"symbol\":\"ATOM\",\"price\":128.40,\"price_currency\":\"CNY\",\"market_cap\":36000000000,\"change_24h\":1.78,\"volume_24h\":6200000000},{\"name\":\"Stellar\",\"symbol\":\"XLM\",\"price\":5.67,\"price_currency\":\"CNY\",\"market_cap\":32000000000,\"change_24h\":-0.56,\"volume_24h\":3800000000},{\"name\":\"Chainlink\",\"symbol\":\"LINK\",\"price\":90.32,\"price_currency\":\"CNY\",\"market_cap\":58000000000,\"change_24h\":-1.23,\"volume_24h\":8500000000},{\"name\":\"Toncoin\",\"symbol\":\"TON\",\"price\":234.50,\"price_currency\":\"CNY\",\"market_cap\":42000000000,\"change_24h\":4.56,\"volume_24h\":7800000000},{\"name\":\"Filecoin\",\"symbol\":\"FIL\",\"price\":385.20,\"price_currency\":\"CNY\",\"market_cap\":38000000000,\"change_24h\":-2.34,\"volume_24h\":4500000000},{\"name\":\"莱特币\",\"symbol\":\"LTC\",\"price\":2488.50,\"price_currency\":\"CNY\",\"market_cap\":52000000000,\"change_24h\":3.67,\"volume_24h\":6800000000},{\"name\":\"Monero\",\"symbol\":\"XMR\",\"price\":1756.20,\"price_currency\":\"CNY\",\"market_cap\":28000000000,\"change_24h\":-1.34,\"volume_24h\":4200000000},{\"name\":\"Hyperliquid\",\"symbol\":\"HYPE\",\"price\":192.65,\"price_currency\":\"CNY\",\"market_cap\":65000000000,\"change_24h\":2.15,\"volume_24h\":3200000000},{\"name\":\"比特币现金\",\"symbol\":\"BCH\",\"price\":3788.70,\"price_currency\":\"CNY\",\"market_cap\":78000000000,\"change_24h\":-0.34,\"volume_24h\":4800000000},{\"name\":\"美元币\",\"symbol\":\"USDC\",\"price\":7.04,\"price_currency\":\"CNY\",\"market_cap\":580000000000,\"change_24h\":0.02,\"volume_24h\":180000000000},{\"name\":\"瑞波币\",\"symbol\":\"XRP\",\"price\":13.30,\"price_currency\":\"CNY\",\"market_cap\":720000000000,\"change_24h\":5.21,\"volume_24h\":35000000000},{\"name\":\"币安币\",\"symbol\":\"BNB\",\"price\":6027.10,\"price_currency\":\"CNY\",\"market_cap\":960000000000,\"change_24h\":3.78,\"volume_24h\":12000000000},{\"name\":\"泰达币\",\"symbol\":\"USDT\",\"price\":7.04,\"price_currency\":\"CNY\",\"market_cap\":1050000000000,\"change_24h\":0.01,\"volume_24h\":250000000000},{\"name\":\"以太币\",\"symbol\":\"ETH\",\"price\":20820.10,\"price_currency\":\"CNY\",\"market_cap\":2490000000000,\"change_24h\":-1.56,\"volume_24h\":85000000000},{\"name\":\"比特币\",\"symbol\":\"BTC\",\"price\":605828.06,\"price_currency\":\"CNY\",\"market_cap\":11830000000000,\"change_24h\":2.34,\"volume_24h\":125000000000}]";
             
             System.out.println("使用硬编码的JSON数据，包含45种加密货币");
 
@@ -312,6 +323,72 @@ public class CryptocurrencyService {
             System.err.println("从Dify API获取加密货币数据失败: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("获取加密货币数据失败: " + e.getMessage(), e);
+        }
+    }
+    
+    // 更新单个加密货币价格
+    @Transactional
+    public Cryptocurrency updateCryptocurrencyPrice(String symbol, BigDecimal price) {
+        // 查找对应的加密货币
+        Cryptocurrency cryptocurrency = cryptocurrencyRepository.findBySymbol(symbol)
+                .orElseThrow(() -> new RuntimeException("加密货币不存在: " + symbol));
+        
+        // 更新价格
+        cryptocurrency.setPrice(price);
+        cryptocurrency.setUpdatedAt(LocalDateTime.now());
+        
+        // 保存到数据库
+        Cryptocurrency updatedCrypto = cryptocurrencyRepository.save(cryptocurrency);
+        
+        // 同时更新所有使用该加密货币的资产
+        updateAssetsForCryptocurrency(symbol, price);
+        
+        return updatedCrypto;
+    }
+    
+    // 批量更新加密货币价格
+    @Transactional
+    public List<Cryptocurrency> batchUpdateCryptocurrencyPrices(List<Map<String, Object>> updateDataList) {
+        List<Cryptocurrency> updatedCryptocurrencies = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+        
+        for (Map<String, Object> updateData : updateDataList) {
+            // 获取symbol和price
+            String symbol = (String) updateData.get("symbol");
+            BigDecimal price = new BigDecimal(updateData.get("price").toString());
+            
+            // 查找对应的加密货币
+            Cryptocurrency cryptocurrency = cryptocurrencyRepository.findBySymbol(symbol)
+                    .orElseThrow(() -> new RuntimeException("加密货币不存在: " + symbol));
+            
+            // 更新价格
+            cryptocurrency.setPrice(price);
+            cryptocurrency.setUpdatedAt(now);
+            
+            // 保存到数据库
+            updatedCryptocurrencies.add(cryptocurrencyRepository.save(cryptocurrency));
+            
+            // 同时更新所有使用该加密货币的资产
+            updateAssetsForCryptocurrency(symbol, price);
+        }
+        
+        return updatedCryptocurrencies;
+    }
+    
+    // 更新使用特定加密货币的所有资产
+    private void updateAssetsForCryptocurrency(String symbol, BigDecimal price) {
+        // 获取所有使用该加密货币的资产
+        List<Asset> assets = assetRepository.findByCryptoType(symbol);
+        
+        for (Asset asset : assets) {
+            // 更新当前价格
+            asset.setPrice(price);
+            // 重新计算当前价值
+            asset.setCurrentValue(asset.getQuantity().multiply(price));
+            // 重新计算收益率
+            assetService.calculateProfitRate(asset);
+            // 保存到数据库
+            assetRepository.save(asset);
         }
     }
 }

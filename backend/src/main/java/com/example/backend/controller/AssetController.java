@@ -28,6 +28,16 @@ public class AssetController {
                 assets = assetService.getAllAssets(userId);
             }
             
+            // 清除循环引用，设置user为null
+            assets.forEach(asset -> {
+                asset.setUser(null);
+                if (asset.getAssetHistories() != null) {
+                    asset.getAssetHistories().forEach(history -> {
+                        history.setAsset(null);
+                    });
+                }
+            });
+            
             Map<String, Object> response = new HashMap<>();
             response.put("code", 200);
             response.put("message", "获取成功");
@@ -92,6 +102,14 @@ public class AssetController {
             asset.setId(assetId);
             Asset updatedAsset = assetService.updateAsset(asset);
             
+            // 清除循环引用，设置user为null，避免前端处理响应时出现问题
+            updatedAsset.setUser(null);
+            if (updatedAsset.getAssetHistories() != null) {
+                updatedAsset.getAssetHistories().forEach(history -> {
+                    history.setAsset(null);
+                });
+            }
+            
             Map<String, Object> response = new HashMap<>();
             response.put("code", 200);
             response.put("message", "更新成功");
@@ -101,7 +119,7 @@ public class AssetController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("code", 500);
-            response.put("message", e.getMessage());
+            response.put("message", e.getMessage() != null ? e.getMessage() : "更新资产失败");
             
             return ResponseEntity.ok(response);
         }

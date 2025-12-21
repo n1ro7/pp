@@ -5,28 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1c1f75a7-4299-453e-83a2-c29d1beb0a88" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/AssetController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/AssetController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/CryptocurrencyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/CryptocurrencyController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/entity/Cryptocurrency.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/entity/Cryptocurrency.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/repository/CryptocurrencyRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/repository/CryptocurrencyRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/service/BCryptPasswordEncoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/repository/AssetRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/repository/AssetRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/service/AssetService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/service/AssetService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/service/CryptocurrencyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/service/CryptocurrencyService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Asset.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Asset.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/AssetHistory.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/AssetHistory.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/OperationLog.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/OperationLog.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Report.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Report.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/SystemSettings.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/SystemSettings.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/UserMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/UserMessage.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/BCryptPasswordEncoder.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database.sql" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +70,8 @@
       <updated>1766112025357</updated>
       <workItem from="1766112026590" duration="878000" />
       <workItem from="1766112929389" duration="3091000" />
-      <workItem from="1766123051449" duration="1184000" />
+      <workItem from="1766123051449" duration="1790000" />
+      <workItem from="1766295233356" duration="9563000" />
     </task>
     <servers />
   </component>
