@@ -6,11 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1c1f75a7-4299-453e-83a2-c29d1beb0a88" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/AssetController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/AssetController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/CryptocurrencyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/CryptocurrencyController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/repository/AssetRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/repository/AssetRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/service/AssetService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/service/AssetService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/service/CryptocurrencyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/service/CryptocurrencyService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +66,8 @@
       <workItem from="1766112026590" duration="878000" />
       <workItem from="1766112929389" duration="3091000" />
       <workItem from="1766123051449" duration="1790000" />
-      <workItem from="1766295233356" duration="9563000" />
+      <workItem from="1766295233356" duration="10340000" />
+      <workItem from="1766327499844" duration="632000" />
     </task>
     <servers />
   </component>

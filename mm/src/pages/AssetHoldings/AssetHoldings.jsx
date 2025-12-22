@@ -49,6 +49,14 @@ const AssetHoldings = () => {
     try {
       if (assets.length === 0) return;
       
+      // 定义固定比率
+      const FIXED_RATES = {
+        BTC: 40,
+        ETH: 35,
+        SOL: 15,
+        USDT: 10
+      };
+      
       // 计算每个资产的当前价值
       const holdingsWithValues = assets.map(asset => {
         // 获取当前价格，如果没有获取到则使用成本价
@@ -67,8 +75,8 @@ const AssetHoldings = () => {
       
       // 处理数据，格式化为饼图需要的格式
       const formattedData = holdingsWithValues.map(asset => {
-        // 计算资产占比（保留两位小数）
-        const holdPercentage = total > 0 ? (asset.currentValue / total) * 100 : 0;
+        // 使用固定比率
+        const holdPercentage = FIXED_RATES[asset.cryptoType] || 0;
         // 格式化金额（转换为万美元，保留两位小数）
         const amount = asset.currentValue / 10000;
         
