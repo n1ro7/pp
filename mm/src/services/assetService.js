@@ -106,3 +106,17 @@ export const batchUpdateAssetValues = async (assetValues) => {
     throw error;
   }
 };
+
+// 获取历史持仓数据
+export const fetchAssetHistory = async (userId, timeRange) => {
+  try {
+    const response = await request.get('/assets/history', { 
+      params: { userId, timeRange },
+      noLoading: false
+    });
+    return response;
+  } catch (error) {
+    console.error('获取历史持仓数据失败:', error);
+    throw error;
+  }
+};

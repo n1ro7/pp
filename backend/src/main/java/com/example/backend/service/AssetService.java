@@ -1,11 +1,15 @@
 package com.example.backend.service;
 
 import com.example.backend.entity.Asset;
+import com.example.backend.entity.AssetHistory;
+import com.example.backend.repository.AssetHistoryRepository;
 import com.example.backend.repository.AssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +20,9 @@ public class AssetService {
 
     @Autowired
     private AssetRepository assetRepository;
+    
+    @Autowired
+    private AssetHistoryRepository assetHistoryRepository;
 
     // 获取用户的所有资产，并自动更新价格和相关计算
     public List<Asset> getAllAssets(Long userId) {
@@ -35,7 +42,10 @@ public class AssetService {
     // 添加新资产
     public Asset addAsset(Asset asset) {
         calculateProfitRate(asset);
-        return assetRepository.save(asset);
+        Asset savedAsset = assetRepository.save(asset);
+        // 保存资产快照
+        saveAssetSnapshot(savedAsset);
+        return savedAsset;
     }
 
     // 更新资产
@@ -69,8 +79,10 @@ public class AssetService {
         // existingAsset.setUser(asset.getUser());
         
         calculateProfitRate(existingAsset);
-        
-        return assetRepository.save(existingAsset);
+        Asset updatedAsset = assetRepository.save(existingAsset);
+        // 保存资产快照
+        saveAssetSnapshot(updatedAsset);
+        return updatedAsset;
     }
     
     // 根据ID获取资产
@@ -118,5 +130,82 @@ public class AssetService {
         stats.put("totalValue", BigDecimal.ZERO);
         stats.put("totalProfit", BigDecimal.ZERO);
         return stats;
+    }
+    
+    // 保存资产快照
+    public void saveAssetSnapshot(Asset asset) {
+        AssetHistory assetHistory = new AssetHistory();
+        assetHistory.setAsset(asset);
+        assetHistory.setPrice(asset.getPrice());
+        assetHistory.setQuantity(asset.getQuantity());
+        assetHistory.setCurrentValue(asset.getCurrentValue());
+        assetHistory.setCostPrice(asset.getCostPrice());
+        assetHistory.setProfitRate(asset.getProfitRate());
+        assetHistory.setCryptoType(asset.getCryptoType());
+        assetHistory.setSnapshotTime(LocalDateTime.now());
+        
+        assetHistoryRepository.save(assetHistory);
+    }
+    
+    // 保存所有资产的快照
+    public void saveAllAssetsSnapshot() {
+        List<Asset> allAssets = assetRepository.findAll();
+        for (Asset asset : allAssets) {
+            saveAssetSnapshot(asset);
+        }
+    }
+    
+    // 根据用户ID和时间范围获取资产历史数据
+    public List<Map<String, Object>> getAssetHistory(Long userId, String timeRange) {
+        // 计算时间范围
+        LocalDateTime endTime = LocalDateTime.now();
+        LocalDateTime startTime;
+        
+        if ("7days".equals(timeRange)) {
+            startTime = endTime.minusDays(7);
+        } else if ("30days".equals(timeRange)) {
+            startTime = endTime.minusDays(30);
+        } else {
+            startTime = endTime.minusDays(7); // 默认7天
+        }
+        
+        // 获取用户的所有资产
+        List<Asset> assets = assetRepository.findByUserId(userId);
+        if (assets.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        // 获取所有资产的历史记录
+        List<AssetHistory> allHistory = new ArrayList<>();
+        for (Asset asset : assets) {
+            List<AssetHistory> assetHistory = assetHistoryRepository.findByAssetIdAndSnapshotTimeBetween(
+                    asset.getId(), startTime, endTime);
+            allHistory.addAll(assetHistory);
+        }
+        
+        // 按时间分组
+        Map<LocalDateTime, Map<String, Object>> historyByTime = new HashMap<>();
+        
+        for (AssetHistory history : allHistory) {
+            // 按日期分组（忽略时间）
+            LocalDateTime dateKey = history.getSnapshotTime().toLocalDate().atStartOfDay();
+            Map<String, Object> dayData = historyByTime.computeIfAbsent(dateKey, k -> {
+                Map<String, Object> data = new HashMap<>();
+                data.put("date", dateKey.toLocalDate().toString());
+                return data;
+            });
+            
+            // 添加资产数据 - 使用 currentValue 而不是 profitRate，因为前端需要的是占比数据
+            // 这里我们返回的是固定比率，因为用户要求比率不变，只变动价值
+            dayData.put(history.getCryptoType(), history.getProfitRate());
+        }
+        
+        // 转换为列表并按时间排序
+        List<Map<String, Object>> result = historyByTime.values().stream()
+                .sorted((a, b) -> a.get("date").toString().compareTo(b.get("date").toString()))
+                .collect(Collectors.toList());
+        
+        // 如果没有历史数据，返回空列表
+        return result;
     }
 }

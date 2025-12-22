@@ -6,6 +6,46 @@
   <component name="ChangeListManager">
     <list default="true" id="1c1f75a7-4299-453e-83a2-c29d1beb0a88" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/BackendApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/BackendApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/AssetController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/AssetController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/entity/AssetHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/entity/AssetHistory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/service/AssetService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/service/AssetService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/BackendApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/BackendApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/common/ApiResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/common/ApiResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/config/CorsConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/config/CorsConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/config/SecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AdminController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AdminController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AssetController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AssetController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/DashboardController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/DashboardController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/MessageController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/MessageController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/ReportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/ReportController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Asset.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Asset.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/AssetHistory.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/AssetHistory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Cryptocurrency.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Cryptocurrency.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Message.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/OperationLog.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/OperationLog.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Report.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Report.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/SystemSettings.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/SystemSettings.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/UserMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/UserMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/AssetRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/AssetRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/MessageRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/MessageRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/OperationLogRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/OperationLogRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/ReportRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/ReportRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/SystemSettingsRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/SystemSettingsRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/UserMessageRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/UserMessageRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/UserRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/AdminService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/AdminService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/AssetService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/AssetService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/AuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/AuthService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/CryptocurrencyService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/CryptocurrencyService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/DashboardService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/DashboardService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/MessageService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/MessageService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/ReportService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/ReportService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/com/example/backend/BackendApplicationTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/example/backend/BackendApplicationTests.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mm/src/pages/AssetHoldings/AssetHoldings.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../mm/src/pages/AssetHoldings/AssetHoldings.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mm/src/services/assetService.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mm/src/services/assetService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +108,7 @@
       <workItem from="1766123051449" duration="1790000" />
       <workItem from="1766295233356" duration="10340000" />
       <workItem from="1766327499844" duration="632000" />
+      <workItem from="1766380610886" duration="1513000" />
     </task>
     <servers />
   </component>

@@ -16,7 +16,7 @@ import {
 } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { exportAssetExcel } from '../../utils/exportExcel';
-import { fetchAssetHoldings, updateAsset } from '../../services/assetService';
+import { fetchAssetHoldings, updateAsset, fetchAssetHistory } from '../../services/assetService';
 import { getCurrentUser } from '../../services/authService';
 import { usePrice } from '../../contexts/PriceContext';
 
@@ -169,8 +169,15 @@ const AssetHoldings = () => {
   // 2. 获取历史持仓数据
   const fetchHistoryHoldings = async () => {
     try {
-      // 历史数据API暂时未实现，使用空数组
-      setHistoryHoldings([]);
+      // 调用API获取真实历史数据
+      const user = getCurrentUser();
+      if (user) {
+        const data = await fetchAssetHistory(user.id, timeRange);
+        setHistoryHoldings(data);
+      } else {
+        // 如果没有用户信息，使用空数组
+        setHistoryHoldings([]);
+      }
     } catch (error) {
       console.error('获取历史持仓失败:', error);
       setHistoryHoldings([]);
@@ -301,57 +308,144 @@ const AssetHoldings = () => {
         <Col xs={24}>
           <Card title={`${timeRange === '7days' ? '近7日' : '近30日'}持仓占比变化`} variant="outlined">
             {historyHoldings.length > 0 ? (
-              <ResponsiveContainer width="100%" height={400}>
+              <ResponsiveContainer width="100%" height={450}>
                 <LineChart
                   data={historyHoldings}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 30 }} // 图表边距（避免x轴标签被截断）
+                  margin={{ top: 10, right: 30, left: 20, bottom: 60 }} // 增加底部边距，确保标签显示完整
                   style={{ border: 'none', outline: 'none' }}
+                  onMouseMove={(e) => {
+                    // 可以添加自定义鼠标移动事件
+                  }}
                 >
-                  {/* 网格线 */}
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                  {/* x轴（日期） */}
+                  {/* 网格线：改进样式 */}
+                  <CartesianGrid 
+                    strokeDasharray="5 5" 
+                    opacity={0.2} 
+                    stroke="#f0f0f0"
+                  />
+                  {/* x轴（日期）：改进样式和可读性 */}
                   <XAxis
                     dataKey="date"
-                    angle={-45} // 标签倾斜45度，避免重叠
+                    angle={-45} 
                     textAnchor="end"
-                    height={60} // 预留足够高度显示倾斜标签
+                    height={80} 
+                    tick={{ fontSize: 12, fill: '#666' }}
+                    tickLine={{ stroke: '#e0e0e0' }}
+                    axisLine={{ stroke: '#e0e0e0' }}
                   />
-                  {/* y轴（占比%） */}
+                  {/* y轴（占比%）：改进样式 */}
                   <YAxis
-                    label={{ value: '占比(%)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
-                    domain={[0, 'dataMax + 5']} // y轴范围：0到最大数据+5（避免最高点贴顶）
-                    tickFormatter={(value) => `${value}%`} // 格式化y轴标签（添加%）
+                    label={{ 
+                      value: '占比(%)', 
+                      angle: -90, 
+                      position: 'insideLeft', 
+                      style: { 
+                        textAnchor: 'middle',
+                        fontSize: 14,
+                        fill: '#666'
+                      } 
+                    }}
+                    domain={[0, 'dataMax + 5']}
+                    tickFormatter={(value) => `${value}%`}
+                    tick={{ fontSize: 12, fill: '#666' }}
+                    tickLine={{ stroke: '#e0e0e0' }}
+                    axisLine={{ stroke: '#e0e0e0' }}
+                    // 增加y轴刻度线
+                    interval="preserveStartEnd"
                   />
-                  {/* tooltip */}
+                  {/* 自定义tooltip：改进样式和信息展示 */}
                   <Tooltip
-                    formatter={(value) => [`${value}%`, '占比']}
-                    contentStyle={{ borderRadius: '4px' }}
-                    labelFormatter={(label) => `日期：${label}`} // 格式化tooltip标题
+                    formatter={(value, name) => {
+                      const asset = currentHoldings.find(a => a.name === name);
+                      const color = asset ? ASSET_COLOR_MAP[asset.name] || ASSET_COLOR_MAP.DEFAULT : '#888';
+                      return [
+                        <span style={{ color, fontWeight: 'bold' }}>{value}%</span>, 
+                        <span style={{ color: '#666' }}>{name}占比</span>
+                      ];
+                    }}
+                    contentStyle={{
+                      borderRadius: '8px',
+                      border: '1px solid #e0e0e0',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                      padding: '12px',
+                      fontSize: '14px'
+                    }}
+                    labelFormatter={(label) => (
+                      <span style={{ fontWeight: 'bold', color: '#333' }}>日期：{label}</span>
+                    )}
+                    // 添加交错显示效果，避免tooltip重叠
+                    wrapperStyle={{ zIndex: 1000 }}
                   />
-                  {/* 图例 */}
-                  <Legend verticalAlign="top" height={36} />
-                  {/* 动态生成各币种折线 */}
+                  {/* 图例：改进样式 */}
+                  <Legend 
+                    verticalAlign="top" 
+                    height={40}
+                    wrapperStyle={{ paddingBottom: '20px' }}
+                    iconType="line" // 使用线条图标，与折线图保持一致
+                    formatter={(value) => (
+                      <span style={{ 
+                        fontSize: '14px',
+                        color: '#333',
+                        fontWeight: '500'
+                      }}>{value}</span>
+                    )}
+                  />
+                  {/* 动态生成各币种折线：改进样式和交互 */}
                   {currentHoldings.map((asset) => (
                     <Line
                       key={asset.name}
-                      type="monotone" // 平滑折线
-                      dataKey={asset.name} // 对应历史数据中的币种key
-                      name={asset.name} // 图例名称
+                      type="monotone"
+                      dataKey={asset.name}
+                      name={asset.name}
                       stroke={ASSET_COLOR_MAP[asset.name] || ASSET_COLOR_MAP.DEFAULT}
-                      strokeWidth={2} // 线条宽度
-                      dot={{ r: 4 }} // 数据点半径
-                      activeDot={{ r: 6 }} // 鼠标悬停数据点半径
-                      animationDuration={1000}
+                      strokeWidth={2.5} // 增加线条宽度，提高可读性
+                      dot={{ 
+                        r: 4, 
+                        strokeWidth: 2,
+                        fill: '#fff',
+                        stroke: ASSET_COLOR_MAP[asset.name] || ASSET_COLOR_MAP.DEFAULT
+                      }}
+                      activeDot={{ 
+                        r: 8, 
+                        strokeWidth: 2,
+                        fill: ASSET_COLOR_MAP[asset.name] || ASSET_COLOR_MAP.DEFAULT,
+                        stroke: '#fff',
+                        cursor: 'pointer'
+                      }}
+                      animationDuration={1500}
+                      animationEasing="ease-out"
+                      // 添加填充区域，提高视觉效果
+                      fill={ASSET_COLOR_MAP[asset.name] || ASSET_COLOR_MAP.DEFAULT}
+                      fillOpacity={0.1}
+                      // 添加事件监听
+                      onClick={(data) => {
+                        console.log(`${asset.name} - ${data.date}: ${data[asset.name]}%`);
+                        // 可以添加点击事件处理，如显示详细信息
+                      }}
                     />
                   ))}
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              // 无数据时显示空状态
-              <div style={{ textAlign: 'center', padding: '80px 0' }}>
-                <Spin size="middle" tip="暂无历史持仓数据">
-                  <div style={{ height: '100px' }}></div>
-                </Spin>
+              // 无数据时显示更友好的空状态
+              <div style={{ textAlign: 'center', padding: '80px 20px' }}>
+                <div style={{ 
+                  fontSize: '48px', 
+                  marginBottom: '16px',
+                  opacity: 0.3
+                }}>
+                  📊
+                </div>
+                <h3 style={{ marginBottom: '8px', color: '#333' }}>暂无历史数据</h3>
+                <p style={{ color: '#999', marginBottom: '24px' }}>
+                  系统将定期保存您的资产快照，数据将在保存后显示
+                </p>
+                <Button 
+                  type="primary" 
+                  onClick={() => fetchHistoryHoldings()}
+                >
+                  刷新数据
+                </Button>
               </div>
             )}
           </Card>

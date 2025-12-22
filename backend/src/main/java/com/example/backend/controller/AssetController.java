@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,6 +157,28 @@ public class AssetController {
             response.put("code", 200);
             response.put("message", "获取成功");
             response.put("data", stats);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 500);
+            response.put("message", e.getMessage());
+            
+            return ResponseEntity.ok(response);
+        }
+    }
+    
+    // 获取历史持仓数据
+    @GetMapping("/history")
+    public ResponseEntity<Map<String, Object>> getAssetHistory(@RequestParam Long userId, @RequestParam String timeRange) {
+        try {
+            // 从数据库获取真实历史数据
+            List<Map<String, Object>> historyData = assetService.getAssetHistory(userId, timeRange);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 200);
+            response.put("message", "获取成功");
+            response.put("data", historyData);
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
