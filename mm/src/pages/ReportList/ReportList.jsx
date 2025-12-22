@@ -61,11 +61,11 @@ const ReportList = () => {
                     title: "增加比特币持仓建议",
                     cryptoType: "BTC",
                     confidence: 92,
-                    coreSuggestion: "基于近期市场走势和技术指标分析，比特币处于上升通道，建议增加10%的持仓比例。",
+                    coreSuggestion: "基于近期市场走势和技术指标分析，比特币处于上升通道，建议增加10%的持仓比例，长期持有收益有望超过20%。",
                     publishTime: "2025-12-20 14:30:00",
                     status: REPORT_STATUS.PENDING,
-                    originalMessage: "用户咨询：比特币近期是否值得加仓？",
-                    analystNotes: "该报告数据支撑充分，技术指标分析到位。"
+                    originalMessage: "用户咨询：比特币近期是否值得加仓？最近市场波动较大，担心买入后下跌，想了解专业的投资建议。",
+                    analystNotes: "该报告数据支撑充分，技术指标分析到位，参考了近6个月的市场走势和成交量数据。"
                 }
             ]);
         } catch (error) {
@@ -150,7 +150,33 @@ const ReportList = () => {
         setDetailVisible(true);
     };
 
-    // 提交审核：优化异步逻辑
+    // 快速审核（通过/拒绝）
+    const handleQuickReview = async (record, decision) => {
+        if (!record?.id) {
+            message.error('报告数据异常，无法执行审核');
+            return;
+        }
+
+        setActionLoading(true);
+        try {
+            // 模拟API调用延迟（真实项目替换为后端审核接口）
+            await new Promise(resolve => setTimeout(resolve, 800));
+            // 更新本地数据
+            setReports(prev => prev.map(report =>
+                report.id === record.id
+                    ? { ...report, status: decision === 'approve' ? REPORT_STATUS.APPROVED : REPORT_STATUS.REJECTED }
+                    : report
+            ));
+            message.success(decision === 'approve' ? '报告已通过审核' : '报告已拒绝');
+        } catch (error) {
+            message.error('审核操作失败，请稍后重试');
+            console.error('审核异常：', error);
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    // 提交审核（弹窗内）
     const submitReview = async () => {
         if (!reviewDecision) {
             message.warning('请选择审核结果');
@@ -330,18 +356,18 @@ const ReportList = () => {
                     </Space>
                 </div>
             ) : (
-                // 有数据状态：确保渲染列表
+                // 有数据状态：核心修改区域，恢复双查看详情入口 + 强制显示底部审核按钮
                 <List
                     grid={{ gutter: 24, column: 1 }}
                     dataSource={reports}
                     renderItem={(item) => (
-                        <List.Item key={item.id || Math.random()}> {/* 增加唯一key，避免React警告 */}
+                        <List.Item key={item.id || Math.random()}>
                             <Card
                                 title={
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '8px' }}>
                                         <div>
                                             <Space>
-                                                <Text strong>{item.title || '未知报告'}</Text>
+                                                <Text strong style={{ fontSize: '16px' }}>{item.title || '未知报告'}</Text>
                                                 {getSuggestionTag(item.title)}
                                                 <Tag color="blue">{item.cryptoType || '未知币种'}</Tag>
                                                 <Tag color="orange">可信度: {item.confidence || 0}%</Tag>
@@ -349,22 +375,130 @@ const ReportList = () => {
                                         </div>
                                         <Space>
                                             {getStatusTag(item.status)}
+                                            {/* 恢复标题栏的查看详情按钮 */}
                                             <Button type="link" icon={<EyeOutlined />} onClick={() => viewReportDetail(item)} disabled={loading}>
                                                 查看详情
                                             </Button>
                                         </Space>
                                     </div>
                                 }
-                                style={{ marginBottom: '16px' }}
+                                style={{
+                                    marginBottom: '16px',
+                                    position: 'relative', // 作为底部绝对定位按钮的容器
+                                    overflow: 'visible' // 确保按钮不被裁剪
+                                }}
+                                // 调整卡片主体内边距，预留底部空间
+                                bodyStyle={{ padding: '24px', paddingBottom: '90px' }}
+                                // 底部审核操作栏：双重保障（footer + 绝对定位）
+                                footer={
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-end',
+                                        alignItems: 'center',
+                                        gap: '16px',
+                                        padding: '20px 24px',
+                                        borderTop: '2px solid #f5f5f5',
+                                        backgroundColor: '#fafafa',
+                                        margin: '0 -24px',
+                                        marginTop: '10px'
+                                    }}>
+                                        <div style={{ marginRight: 'auto', color: '#666', fontSize: '14px' }}>
+                                            <ClockCircleOutlined style={{ marginRight: '4px' }} />
+                                            {formatTime(item.publishTime)}
+                                        </div>
+                                        {/* 底部查看详情按钮（保留） */}
+                                        <Button
+                                            type="link"
+                                            icon={<EyeOutlined />}
+                                            onClick={() => viewReportDetail(item)}
+                                            disabled={loading}
+                                            style={{ color: '#1890ff', fontWeight: 600 }}
+                                        >
+                                            查看详情
+                                        </Button>
+                                    </div>
+                                }
                             >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-                                    <Paragraph ellipsis={{ rows: 2, expandable: false }} style={{ marginBottom: 0, maxWidth: '80%' }}>
-                                        <Text strong>核心建议: </Text>
+                                {/* 1. 突出展示AI核心建议 */}
+                                <div style={{
+                                    marginBottom: '16px',
+                                    padding: '20px',
+                                    backgroundColor: '#f6ffed',
+                                    borderRadius: '8px',
+                                    border: '1px solid #b7eb8f'
+                                }}>
+                                    <Text strong style={{ fontSize: '16px', color: '#52c41a', display: 'block', marginBottom: '8px' }}>AI核心建议</Text>
+                                    <Paragraph style={{
+                                        fontSize: '15px',
+                                        lineHeight: 1.8,
+                                        marginBottom: 0,
+                                        color: '#262626'
+                                    }}>
                                         {item.coreSuggestion || '暂无核心建议'}
                                     </Paragraph>
-                                    <div style={{ color: '#666' }}>
-                                        <ClockCircleOutlined /> {formatTime(item.publishTime)}
-                                    </div>
+                                </div>
+
+                                {/* 2. 关联展示对应的原始消息 */}
+                                <div style={{
+                                    padding: '16px',
+                                    backgroundColor: '#fafafa',
+                                    borderRadius: '8px',
+                                    border: '1px solid #f0f0f0'
+                                }}>
+                                    <Text strong style={{ fontSize: '15px', color: '#4a4a4a', display: 'block', marginBottom: '8px' }}>原始消息</Text>
+                                    <Paragraph style={{
+                                        fontSize: '14px',
+                                        lineHeight: 1.7,
+                                        marginBottom: 0,
+                                        color: '#595959'
+                                    }}>
+                                        {item.originalMessage || '暂无原始消息'}
+                                    </Paragraph>
+                                </div>
+
+                                {/* 强制显示底部审核按钮（绝对定位，不被任何样式覆盖） */}
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: '25px',
+                                    right: '180px', // 避开底部查看详情按钮
+                                    display: 'flex',
+                                    gap: '12px',
+                                    zIndex: 10, // 确保在最上层
+                                }}>
+                                    {item.status === REPORT_STATUS.PENDING && (
+                                        <Space size="middle">
+                                            <Button
+                                                danger
+                                                size="default"
+                                                icon={<CloseCircleOutlined />}
+                                                onClick={() => handleQuickReview(item, 'reject')}
+                                                loading={actionLoading}
+                                                style={{
+                                                    padding: '0 20px',
+                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                                    backgroundColor: '#ff4d4f',
+                                                    borderColor: '#ff4d4f'
+                                                }}
+                                            >
+                                                拒绝
+                                            </Button>
+                                            <Button
+                                                type="primary"
+                                                size="default"
+                                                icon={<CheckCircleOutlined />}
+                                                onClick={() => handleQuickReview(item, 'approve')}
+                                                loading={actionLoading}
+                                                style={{
+                                                    padding: '0 20px',
+                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                                    backgroundColor: '#1890ff',
+                                                    borderColor: '#1890ff'
+                                                }}
+                                            >
+                                                通过
+                                            </Button>
+                                        </Space>
+                                    )}
                                 </div>
                             </Card>
                         </List.Item>
@@ -449,7 +583,7 @@ const ReportList = () => {
 
                         {/* 原始消息 */}
                         <div style={{ marginBottom: '24px' }}>
-                            <Title level={5} style={{ marginBottom: '16px' }}>关联原始消息</Title>
+                            <Title level={5} style={{ marginBottom: '16px' }}>原始消息</Title>
                             <Card size="small" variant="outlined">
                                 <Paragraph style={{ lineHeight: 1.8 }}>{currentReport.originalMessage || '暂无原始消息'}</Paragraph>
                             </Card>

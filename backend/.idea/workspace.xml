@@ -5,47 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1c1f75a7-4299-453e-83a2-c29d1beb0a88" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/BackendApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/BackendApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/AssetController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/controller/AssetController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/entity/AssetHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/entity/AssetHistory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/backend/service/AssetService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/backend/service/AssetService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/BackendApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/BackendApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/common/ApiResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/common/ApiResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/config/CorsConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/config/CorsConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/config/SecurityConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AdminController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AdminController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AssetController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AssetController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/AuthController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/DashboardController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/DashboardController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/MessageController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/MessageController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/controller/ReportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/controller/ReportController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Asset.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Asset.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/AssetHistory.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/AssetHistory.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Cryptocurrency.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Cryptocurrency.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/OperationLog.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/OperationLog.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Report.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/Report.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/SystemSettings.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/SystemSettings.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/entity/UserMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/entity/UserMessage.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/AssetRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/AssetRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/MessageRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/MessageRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/OperationLogRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/OperationLogRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/ReportRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/ReportRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/SystemSettingsRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/SystemSettingsRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/UserMessageRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/UserMessageRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/repository/UserRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/AdminService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/AdminService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/AssetService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/AssetService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/AuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/AuthService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/CryptocurrencyService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/CryptocurrencyService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/DashboardService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/DashboardService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/MessageService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/MessageService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/backend/service/ReportService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/backend/service/ReportService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/com/example/backend/BackendApplicationTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/example/backend/BackendApplicationTests.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mm/src/pages/AssetHoldings/AssetHoldings.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../mm/src/pages/AssetHoldings/AssetHoldings.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mm/src/services/assetService.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mm/src/services/assetService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mm/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mm/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mm/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mm/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mm/src/pages/ReportList/ReportList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../mm/src/pages/ReportList/ReportList.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,25 +30,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;Spring Boot.BackendApplication.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.BackendApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "F:/backend_Code/pp/backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
@@ -94,6 +61,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -109,6 +84,7 @@
       <workItem from="1766295233356" duration="10340000" />
       <workItem from="1766327499844" duration="632000" />
       <workItem from="1766380610886" duration="1513000" />
+      <workItem from="1766398270286" duration="760000" />
     </task>
     <servers />
   </component>
