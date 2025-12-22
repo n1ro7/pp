@@ -80,6 +80,10 @@ public class ReportService {
         
         if ("approved".equals(status)) {
             report.setPublishAt(LocalDateTime.now());
+            // 审核通过时，调用更新持仓接口
+            // 这里可以添加调用AssetService或其他相关服务的逻辑
+            System.out.println("审核通过，准备更新持仓: " + report.getCryptoType());
+            // 示例：assetService.updateAssetHoldings(report.getCryptoType(), report.getCoreSuggestion());
         }
         
         return reportRepository.save(report);

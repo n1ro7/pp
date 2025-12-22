@@ -39,58 +39,92 @@ const ReportList = () => {
     const [filterStatus, setFilterStatus] = useState('all');
 
     // 初始化数据 + 筛选触发
-    const fetchReports = async () => {
+    const fetchReports = () => {
         // 每次请求前强制设置loading为true，避免状态异常
         setLoading(true);
-        try {
-            // 真实接口请求：保留原有逻辑，增加参数容错
-            const response = await axios.get('/api/reports', {
-                params: {
-                    keyword: searchKeyword || '', // 避免传递undefined
-                    status: filterStatus === 'all' ? '' : filterStatus || ''
-                },
-                // 单独设置当前请求的超时时间（可选）
-                timeout: 10000
-            });
-            // 兼容后端不同返回格式：优先取data，无数据则设为空数组
-            const reportData = response.data?.data || [];
-            //模拟数据
-            setReports([
-                {
-                    id: 1,
-                    title: "增加比特币持仓建议",
-                    cryptoType: "BTC",
-                    confidence: 92,
-                    coreSuggestion: "基于近期市场走势和技术指标分析，比特币处于上升通道，建议增加10%的持仓比例，长期持有收益有望超过20%。",
-                    publishTime: "2025-12-20 14:30:00",
-                    status: REPORT_STATUS.PENDING,
-                    originalMessage: "用户咨询：比特币近期是否值得加仓？最近市场波动较大，担心买入后下跌，想了解专业的投资建议。",
-                    analystNotes: "该报告数据支撑充分，技术指标分析到位，参考了近6个月的市场走势和成交量数据。"
-                }
-            ]);
-        } catch (error) {
-            // 详细打印错误信息，便于排查
-            console.error('接口请求异常详情：', {
-                message: error.message,
-                status: error.response?.status,
-                url: error.config?.url
-            });
-            // 错误提示区分场景，提升用户体验
-            if (error.message.includes('Network Error')) {
-                message.error('网络异常，请检查网络连接或后端服务是否启动');
-            } else if (error.response?.status === 404) {
-                message.error('接口地址不存在，请检查后端接口路径是否正确');
-            } else if (error.response?.status === 500) {
-                message.error('后端服务报错，请联系后端开发人员排查');
-            } else {
-                message.error('获取报告数据失败，请稍后重试');
+        
+        // 直接使用模拟数据，跳过真实API请求
+        console.log('使用模拟数据展示报告列表');
+        
+        // 模拟数据：包含不同状态的报告
+        const mockReports = [
+            {
+                id: 1,
+                title: "增加比特币持仓建议",
+                cryptoType: "BTC",
+                confidence: 92,
+                coreSuggestion: "基于近期市场走势和技术指标分析，比特币处于上升通道，建议增加10%的持仓比例，长期持有收益有望超过20%。",
+                publishTime: "2025-12-20 14:30:00",
+                status: REPORT_STATUS.PENDING,
+                originalMessage: "用户咨询：比特币近期是否值得加仓？最近市场波动较大，担心买入后下跌，想了解专业的投资建议。",
+                analystNotes: "该报告数据支撑充分，技术指标分析到位，参考了近6个月的市场走势和成交量数据。"
+            },
+            {
+                id: 2,
+                title: "减少以太坊持仓建议",
+                cryptoType: "ETH",
+                confidence: 85,
+                coreSuggestion: "以太坊近期技术面出现看跌信号，建议减少5%的持仓比例，规避短期下跌风险。",
+                publishTime: "2025-12-19 10:15:00",
+                status: REPORT_STATUS.APPROVED,
+                originalMessage: "以太坊价格连续三天下跌，是否应该卖出部分仓位？",
+                analystNotes: "综合考虑技术指标和市场情绪，建议适当减仓。"
+            },
+            {
+                id: 3,
+                title: "Solana长期持有建议",
+                cryptoType: "SOL",
+                confidence: 78,
+                coreSuggestion: "Solana生态系统持续发展，长期看好其增长潜力，建议保持现有持仓并考虑长期持有。",
+                publishTime: "2025-12-18 16:45:00",
+                status: REPORT_STATUS.REJECTED,
+                originalMessage: "Solana最近表现不错，是否应该增持？",
+                analystNotes: "报告分析不够深入，缺乏足够的数据支撑，建议补充更多市场数据后重新提交。",
+                reviewComment: "分析不够深入，缺乏足够的数据支撑"
+            },
+            {
+                id: 4,
+                title: "ADA价格上涨预期",
+                cryptoType: "ADA",
+                confidence: 88,
+                coreSuggestion: "Cardano即将进行重大升级，预计将带动ADA价格上涨，建议适当增持。",
+                publishTime: "2025-12-17 09:30:00",
+                status: REPORT_STATUS.PENDING,
+                originalMessage: "Cardano升级对价格有什么影响？",
+                analystNotes: "基于历史数据和市场预期，升级后价格上涨的概率较大。"
+            },
+            {
+                id: 5,
+                title: "DOT短期回调风险",
+                cryptoType: "DOT",
+                confidence: 81,
+                coreSuggestion: "Polkadot近期涨幅过大，存在短期回调风险，建议暂时观望。",
+                publishTime: "2025-12-16 14:20:00",
+                status: REPORT_STATUS.APPROVED,
+                originalMessage: "DOT价格涨得很快，是否应该追高？",
+                analystNotes: "建议观望为主，等待回调后再考虑买入。"
             }
-            // 强制兜底：确保设置为空数组，让组件能渲染空状态
-            setReports([]);
-        } finally {
-            // 无论成功失败，都强制结束加载状态，避免一直处于加载中
-            setLoading(false);
+        ];
+        
+        // 根据筛选条件过滤模拟数据
+        let filteredReports = [...mockReports];
+        
+        // 按状态筛选
+        if (filterStatus !== 'all') {
+            filteredReports = filteredReports.filter(report => report.status === filterStatus);
         }
+        
+        // 按关键词搜索
+        if (searchKeyword) {
+            const keyword = searchKeyword.toLowerCase();
+            filteredReports = filteredReports.filter(report => 
+                report.title.toLowerCase().includes(keyword) || 
+                report.cryptoType.toLowerCase().includes(keyword)
+            );
+        }
+        
+        setReports(filteredReports);
+        setLoading(false);
     };
 
     // 初始化加载数据
@@ -151,33 +185,29 @@ const ReportList = () => {
     };
 
     // 快速审核（通过/拒绝）
-    const handleQuickReview = async (record, decision) => {
+    const handleQuickReview = (record, decision) => {
         if (!record?.id) {
             message.error('报告数据异常，无法执行审核');
             return;
         }
 
         setActionLoading(true);
-        try {
-            // 模拟API调用延迟（真实项目替换为后端审核接口）
-            await new Promise(resolve => setTimeout(resolve, 800));
-            // 更新本地数据
-            setReports(prev => prev.map(report =>
-                report.id === record.id
+        
+        // 模拟审核成功，直接更新本地数据
+        setReports(prev => 
+            prev.map(report => 
+                report.id === record.id 
                     ? { ...report, status: decision === 'approve' ? REPORT_STATUS.APPROVED : REPORT_STATUS.REJECTED }
                     : report
-            ));
-            message.success(decision === 'approve' ? '报告已通过审核' : '报告已拒绝');
-        } catch (error) {
-            message.error('审核操作失败，请稍后重试');
-            console.error('审核异常：', error);
-        } finally {
-            setActionLoading(false);
-        }
+            )
+        );
+        
+        message.success(decision === 'approve' ? '报告已通过审核' : '报告已拒绝');
+        setActionLoading(false);
     };
 
     // 提交审核（弹窗内）
-    const submitReview = async () => {
+    const submitReview = () => {
         if (!reviewDecision) {
             message.warning('请选择审核结果');
             return;
@@ -188,29 +218,24 @@ const ReportList = () => {
         }
 
         setActionLoading(true);
-
-        try {
-            // 模拟API调用延迟（真实项目中替换为后端审核接口）
-            await new Promise(resolve => setTimeout(resolve, 800));
-            // 更新本地数据
-            setReports(prev => prev.map(report =>
-                report.id === currentReport.id
+        
+        // 模拟审核成功，直接更新本地数据
+        setReports(prev => 
+            prev.map(report => 
+                report.id === currentReport.id 
                     ? { ...report, status: reviewDecision === 'approve' ? REPORT_STATUS.APPROVED : REPORT_STATUS.REJECTED }
                     : report
-            ));
-            message.success(reviewDecision === 'approve' ? '报告已通过审核' : '报告已拒绝');
-            setDetailVisible(false);
-        } catch (error) {
-            message.error('审核操作失败，请稍后重试');
-            console.error('审核异常：', error);
-        } finally {
-            setActionLoading(false);
-        }
+            )
+        );
+        
+        message.success(reviewDecision === 'approve' ? '报告已通过审核' : '报告已拒绝');
+        setDetailVisible(false);
+        setActionLoading(false);
     };
 
     // 计算待审核报告数量：增加容错，避免reports不是数组
-    const pendingReportsCount = Array.isArray(reports)
-        ? reports.filter(report => report.status === REPORT_STATUS.PENDING).length
+    const pendingReportsCount = Array.isArray(reports) 
+        ? reports.filter(report => report.status === REPORT_STATUS.PENDING).length 
         : 0;
 
     // 搜索功能：增加容错
@@ -252,7 +277,7 @@ const ReportList = () => {
     }
 
     return (
-        <div style={{ padding: '40px 24px 24px', minHeight: '80vh', backgroundColor: '#fff' }}> {/* 增加背景色，避免完全空白 */}
+        <div style={{ padding: '40px 24px 24px', minHeight: '80vh', backgroundColor: '#fff' }}>
             <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
                 <Title level={4}>建议报告管理</Title>
 
@@ -634,14 +659,10 @@ const ReportList = () => {
                                 <Text style={{ marginLeft: '8px' }}>
                                     {currentReport.status === REPORT_STATUS.APPROVED ? '已通过' : '已拒绝'}
                                 </Text>
-                                {reviewNotes ? (
+                                {currentReport.reviewComment && (
                                     <div style={{ marginTop: '8px' }}>
                                         <Text strong>审核备注：</Text>
-                                        <Text style={{ marginLeft: '8px' }}>{reviewNotes}</Text>
-                                    </div>
-                                ) : (
-                                    <div style={{ marginTop: '8px' }}>
-                                        <Text type="secondary">暂无审核备注</Text>
+                                        <Text style={{ marginLeft: '8px' }}>{currentReport.reviewComment}</Text>
                                     </div>
                                 )}
                             </div>

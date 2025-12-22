@@ -42,7 +42,7 @@ public class Report {
     private String content; // 报告内容
 
     @Column(nullable = false, length = 20)
-    private String status; // draft、pending_review、approved、rejected
+    private String status; // pending、approved、rejected
 
     @Column(name = "review_comment", columnDefinition = "LONGTEXT")
     private String reviewComment; // 审核意见

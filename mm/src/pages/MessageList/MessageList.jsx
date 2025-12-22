@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Table, Select, Tag, Button, Space, Modal, Typography, DatePicker, Badge, Spin, Empty } from 'antd';
 import { ClockCircleOutlined, FilterOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useMessage } from '../../contexts/MessageContext';
 
 const { Title, Paragraph, Text } = Typography;
 const { Option } = Select;
@@ -25,74 +26,17 @@ const MARKET_IMPACTS = [
   { label: '中性', value: 'neutral' },
 ];
 
-// 模拟消息数据
-const generateMockMessages = () => {
-  const messages = [];
-  const now = new Date();
-  
-  for (let i = 0; i < 20; i++) {
-    const date = new Date(now);
-    date.setMinutes(date.getMinutes() - i * 30);
-    
-    const crypto = CRYPTO_TYPES[Math.floor(Math.random() * CRYPTO_TYPES.length)].value;
-    const impact = MARKET_IMPACTS[Math.floor(Math.random() * MARKET_IMPACTS.length)].value;
-    
-    let title, content;
-    
-    switch (impact) {
-      case 'positive':
-        title = `${crypto} 价格突破重要阻力位，有望继续上涨`;
-        content = `${crypto} 今日交易量大幅增加，价格突破了近三个月来的重要阻力位。分析师预测，随着市场情绪好转和机构资金流入，短期内可能继续保持上涨趋势。技术指标显示，RSI指标处于中性区域，MACD指标形成金叉，表明短期动能正在增强。`;
-        break;
-      case 'negative':
-        title = `监管消息导致 ${crypto} 价格下跌，投资者需谨慎`;
-        content = `今日市场传来关于 ${crypto} 相关的监管收紧消息，导致价格出现明显下跌。专家建议投资者保持谨慎，关注监管动态。从技术面看，价格已跌破5日均线，短期内可能面临进一步回调压力。`;
-        break;
-      default:
-        title = `${crypto} 市场维持横盘整理，等待新的催化剂`;
-        content = `${crypto} 近期交易维持在一定区间内，波动性较低。市场正在等待新的基本面消息或技术突破来决定下一步走势。目前交易量较为平淡，表明市场参与者态度谨慎。`;
-        break;
-    }
-    
-    messages.push({
-      id: `msg-${i + 1}`,
-      title,
-      content,
-      cryptoType: crypto,
-      marketImpact: impact,
-      publishTime: date.toISOString(),
-      read: i > 5, // 模拟部分未读消息
-    });
-  }
-  
-  return messages.sort((a, b) => new Date(b.publishTime) - new Date(a.publishTime));
-};
-
 const MessageList = () => {
   const navigate = useNavigate();
-  const [messages, setMessages] = useState([]);
+  const { messages, loading, markAsRead } = useMessage();
   const [filteredMessages, setFilteredMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedCrypto, setSelectedCrypto] = useState([]);
   const [selectedImpact, setSelectedImpact] = useState([]);
   const [dateRange, setDateRange] = useState(null);
   const [detailVisible, setDetailVisible] = useState(false);
   const [currentMessage, setCurrentMessage] = useState(null);
 
-  // 初始化数据
-  useEffect(() => {
-    // 模拟数据加载延迟
-    const timer = setTimeout(() => {
-      const mockData = generateMockMessages();
-      setMessages(mockData);
-      setFilteredMessages(mockData);
-      setLoading(false);
-    }, 800);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // 应用筛选条件
+  // 初始化数据 + 筛选触发
   useEffect(() => {
     let filtered = [...messages];
 
@@ -148,9 +92,7 @@ const MessageList = () => {
   const viewMessageDetail = (record) => {
     // 标记为已读
     if (!record.read) {
-      setMessages(messages.map(msg => 
-        msg.id === record.id ? { ...msg, read: true } : msg
-      ));
+      markAsRead(record.id);
     }
     setCurrentMessage(record);
     setDetailVisible(true);

@@ -4,15 +4,19 @@ import { BellOutlined, FileTextOutlined, WalletOutlined, ReloadOutlined, BarChar
 import { useNavigate } from 'react-router-dom';
 import { fetchDashboardStats } from '../../services/dashboardService';
 import { getCurrentUser } from '../../services/authService';
+import { useMessage } from '../../contexts/MessageContext';
+import { useAsset } from '../../contexts/AssetContext';
 
 const { Title } = Typography;
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { getUnreadCount } = useMessage();
+  const { totalAssetValue } = useAsset();
   const [dashboardData, setDashboardData] = useState({
     unreadMessages: 0,
     pendingReports: 0,
-    totalAssetValue: 0,
+    totalAssetValue: totalAssetValue,
     recentActivities: []
   });
   const [loading, setLoading] = useState(false);
@@ -28,21 +32,27 @@ const Dashboard = () => {
       
       // 调用API获取仪表盘数据，传递userId
       const data = await fetchDashboardStats(currentUser.id);
+      // 获取实时未读消息数
+      const unreadCount = getUnreadCount();
+      
       // 转换API数据格式以适应新的UI需求
       setDashboardData({
-        unreadMessages: data.unreadMessages || 0,
+        unreadMessages: unreadCount,
         pendingReports: data.pendingReports || 0,
-        totalAssetValue: data.totalAssetValue || 0,
+        // 优先使用AssetContext中的总资产估值，确保数据同步
+        totalAssetValue: totalAssetValue,
         recentActivities: data.recentActivities || []
       });
     } catch (error) {
       console.error('获取仪表盘数据失败:', error);
       message.error('获取数据失败，请稍后重试');
       // 使用空数据避免页面空白
+      const unreadCount = getUnreadCount();
       setDashboardData({
-        unreadMessages: 0,
+        unreadMessages: unreadCount,
         pendingReports: 0,
-        totalAssetValue: 0,
+        // 优先使用AssetContext中的总资产估值
+        totalAssetValue: totalAssetValue,
         recentActivities: []
       });
     } finally {
@@ -50,11 +60,28 @@ const Dashboard = () => {
     }
   };
 
+  // 初始化加载数据
   useEffect(() => {
     loadDashboardData();
     const timer = setInterval(loadDashboardData, 5 * 60 * 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // 当未读消息数变化时更新仪表盘数据
+  useEffect(() => {
+    setDashboardData(prev => ({
+      ...prev,
+      unreadMessages: getUnreadCount()
+    }));
+  }, [getUnreadCount]);
+
+  // 当总资产估值变化时更新仪表盘数据
+  useEffect(() => {
+    setDashboardData(prev => ({
+      ...prev,
+      totalAssetValue: totalAssetValue
+    }));
+  }, [totalAssetValue]);
 
   const jumpToPage = (path) => {
     navigate(path);

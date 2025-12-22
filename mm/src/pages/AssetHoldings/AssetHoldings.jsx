@@ -19,6 +19,7 @@ import { exportAssetExcel } from '../../utils/exportExcel';
 import { fetchAssetHoldings, updateAsset, fetchAssetHistory } from '../../services/assetService';
 import { getCurrentUser } from '../../services/authService';
 import { usePrice } from '../../contexts/PriceContext';
+import { useAsset } from '../../contexts/AssetContext';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -35,6 +36,7 @@ const ASSET_COLOR_MAP = {
 const AssetHoldings = () => {
   const navigate = useNavigate();
   const { priceData } = usePrice(); // 使用价格上下文获取最新价格数据
+  const { updateTotalAssetValue } = useAsset(); // 使用资产上下文更新总资产估值
   
   // 状态管理
   const [currentHoldings, setCurrentHoldings] = useState([]); // 当前持仓（饼图）
@@ -45,76 +47,100 @@ const AssetHoldings = () => {
   const [assets, setAssets] = useState([]); // 从API获取的原始资产数据
   
   // 1. 计算当前持仓数据
-  const calculateHoldings = () => {
+  const calculateHoldings = (assetsParam) => {
     try {
-      if (assets.length === 0) return;
+      // 使用传入的assetsParam或当前assets状态
+      const targetAssets = assetsParam || assets;
+      let total = 0;
+      let formattedData = [];
       
-      // 定义固定比率
-      const FIXED_RATES = {
-        BTC: 40,
-        ETH: 35,
-        SOL: 15,
-        USDT: 10
-      };
-      
-      // 计算每个资产的当前价值
-      const holdingsWithValues = assets.map(asset => {
-        // 获取当前价格，如果没有获取到则使用成本价
-        const currentPrice = priceData[asset.cryptoType] || asset.costPrice;
-        // 计算当前价值（数量 * 当前价格）
-        const currentValue = asset.quantity * currentPrice;
-        
-        return {
-          ...asset,
-          currentValue: currentValue
+      if (targetAssets.length > 0) {
+        // 定义固定比率
+        const FIXED_RATES = {
+          BTC: 40,
+          ETH: 35,
+          SOL: 15,
+          USDT: 10
         };
-      });
-      
-      // 计算总资产价值
-      const total = holdingsWithValues.reduce((sum, asset) => sum + asset.currentValue, 0);
-      
-      // 处理数据，格式化为饼图需要的格式
-      const formattedData = holdingsWithValues.map(asset => {
-        // 使用固定比率
-        const holdPercentage = FIXED_RATES[asset.cryptoType] || 0;
-        // 格式化金额（转换为万美元，保留两位小数）
-        const amount = asset.currentValue / 10000;
         
-        return {
-          name: asset.cryptoType || asset.name,
-          value: holdPercentage,
-          amount: amount,
-          rateText: `${holdPercentage.toFixed(2)}%`
-        };
-      });
-      
-      // 更新状态
-      setCurrentHoldings(formattedData);
-      // 转换为万美元显示
-      setTotalValue(total / 10000);
-      
-      // 同步更新数据到数据库 - 只更新必要的字段，避免干扰后端的其他逻辑
-      const updateAssetPromises = assets.map(asset => {
-        // 获取当前价格，如果没有获取到则使用成本价
-        const currentPrice = priceData[asset.cryptoType] || asset.costPrice || 0;
-        // 计算当前价值（数量 * 当前价格）
-        const currentValue = asset.quantity * currentPrice;
+        // 计算每个资产的当前价值
+        const holdingsWithValues = targetAssets.map(asset => {
+          // 获取当前价格，如果没有获取到则使用成本价
+          const currentPrice = priceData[asset.cryptoType] || asset.costPrice;
+          // 成本价是美元，转换为人民币（假设汇率为1美元=7元人民币）
+          const priceInCNY = priceData[asset.cryptoType] || (asset.costPrice * 7);
+          // 计算当前价值（数量 * 当前价格，单位：元）
+          const currentValue = asset.quantity * priceInCNY;
+          
+          return {
+            ...asset,
+            currentValue: currentValue
+          };
+        });
         
-        // 字段名使用下划线命名，与后端数据库表保持一致
-        return updateAsset(asset.id, {
-          price: currentPrice,
-          current_value: currentValue
+        // 计算总资产价值
+        total = holdingsWithValues.reduce((sum, asset) => sum + asset.currentValue, 0);
+        
+        // 处理数据，格式化为饼图需要的格式
+        formattedData = holdingsWithValues.map(asset => {
+          // 使用固定比率
+          const holdPercentage = FIXED_RATES[asset.cryptoType] || 0;
+          // 格式化金额（转换为万美元，保留两位小数）
+          const amount = asset.currentValue / 10000;
+          
+          return {
+            name: asset.cryptoType || asset.name,
+            value: holdPercentage,
+            amount: amount,
+            rateText: `${holdPercentage.toFixed(2)}%`
+          };
         });
-      });
+        
+        // 更新状态
+        setCurrentHoldings(formattedData);
+        // 转换为万美元显示
+        setTotalValue(total / 10000);
+        
+        // 同步更新数据到数据库 - 只更新必要的字段，避免干扰后端的其他逻辑
+        const updateAssetPromises = targetAssets.map(asset => {
+          // 获取当前价格，如果没有获取到则使用成本价
+          const currentPrice = priceData[asset.cryptoType] || asset.costPrice || 0;
+          // 成本价是美元，转换为人民币（假设汇率为1美元=7元人民币）
+          const priceInCNY = priceData[asset.cryptoType] || (asset.costPrice * 7);
+          // 计算当前价值（数量 * 当前价格，单位：元）
+          const currentValue = asset.quantity * priceInCNY;
+          
+          // 字段名使用下划线命名，与后端数据库表保持一致
+          return updateAsset(asset.id, {
+            price: priceInCNY,
+            current_value: currentValue
+          });
+        });
+        
+        // 并行执行所有更新请求
+        Promise.all(updateAssetPromises)
+          .then(() => {
+            console.log('资产数据已同步到数据库');
+          })
+          .catch(error => {
+            console.error('更新资产数据到数据库失败:', error);
+          });
+      } else {
+        // 如果assets为空，使用默认数据
+        formattedData = [
+          { name: 'BTC', value: 40, amount: 400, rateText: '40%' },
+          { name: 'ETH', value: 35, amount: 350, rateText: '35%' },
+          { name: 'SOL', value: 15, amount: 150, rateText: '15%' },
+          { name: 'USDT', value: 10, amount: 100, rateText: '10%' }
+        ];
+        setCurrentHoldings(formattedData);
+        setTotalValue(1000);
+        // 默认1000万美元 = 10000000元
+        total = 10000000;
+      }
       
-      // 并行执行所有更新请求
-      Promise.all(updateAssetPromises)
-        .then(() => {
-          console.log('资产数据已同步到数据库');
-        })
-        .catch(error => {
-          console.error('更新资产数据到数据库失败:', error);
-        });
+      // 更新全局总资产估值（元）
+      updateTotalAssetValue(total);
     } catch (error) {
       console.error('计算持仓数据失败:', error);
       // 失败时使用默认数据
@@ -126,6 +152,8 @@ const AssetHoldings = () => {
       ];
       setCurrentHoldings(formattedData);
       setTotalValue(1000);
+      // 更新全局总资产估值（元），默认1000万美元 = 10000000元
+      updateTotalAssetValue(10000000);
     }
   };
   
@@ -144,25 +172,29 @@ const AssetHoldings = () => {
           return;
         } else {
           // 如果API返回空数据，使用默认数据
-          setAssets([
+          const defaultAssets = [
             { id: 1, name: 'BTC', cryptoType: 'BTC', quantity: 66.666667, costPrice: 60000, type: '加密货币' },
             { id: 2, name: 'ETH', cryptoType: 'ETH', quantity: 1750, costPrice: 2000, type: '加密货币' },
             { id: 3, name: 'SOL', cryptoType: 'SOL', quantity: 15000, costPrice: 100, type: '加密货币' },
             { id: 4, name: 'USDT', cryptoType: 'USDT', quantity: 1000000, costPrice: 1, type: '加密货币' }
-          ]);
-          calculateHoldings();
+          ];
+          setAssets(defaultAssets);
+          // 直接使用defaultAssets计算，避免等待状态更新
+          calculateHoldings(defaultAssets);
         }
       }
     } catch (error) {
       console.error('获取当前持仓失败:', error);
       // 失败时使用默认数据
-      setAssets([
+      const defaultAssets = [
         { id: 1, name: 'BTC', cryptoType: 'BTC', quantity: 66.666667, costPrice: 60000, type: '加密货币' },
         { id: 2, name: 'ETH', cryptoType: 'ETH', quantity: 1750, costPrice: 2000, type: '加密货币' },
         { id: 3, name: 'SOL', cryptoType: 'SOL', quantity: 15000, costPrice: 100, type: '加密货币' },
         { id: 4, name: 'USDT', cryptoType: 'USDT', quantity: 1000000, costPrice: 1, type: '加密货币' }
-      ]);
-      calculateHoldings();
+      ];
+      setAssets(defaultAssets);
+      // 直接使用defaultAssets计算，避免等待状态更新
+      calculateHoldings(defaultAssets);
     }
   };
 
