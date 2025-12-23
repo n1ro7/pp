@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Button, Space, message, Typography, Select, Spin } from 'antd';
-import { DownloadOutlined, CalendarOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Button, Space, message, Typography, Select, Spin, Modal, Form, InputNumber } from 'antd';
+import { DownloadOutlined, CalendarOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import {
   PieChart,
   Pie,
@@ -45,6 +45,13 @@ const AssetHoldings = () => {
   const [exportLoading, setExportLoading] = useState(false); // 导出按钮loading
   const [totalValue, setTotalValue] = useState(0); // 总计金额（万美元）
   const [assets, setAssets] = useState([]); // 从API获取的原始资产数据
+  
+  // 交易相关状态
+  const [tradeModalVisible, setTradeModalVisible] = useState(false); // 交易模态框显示状态
+  const [tradeType, setTradeType] = useState('buy'); // 交易类型：'buy' 或 'sell'
+  const [selectedCrypto, setSelectedCrypto] = useState(''); // 选择的加密货币
+  const [tradeForm] = Form.useForm(); // 交易表单实例
+  const [tradeAmount, setTradeAmount] = useState(0); // 交易数量
   
   // 1. 计算当前持仓数据
   const calculateHoldings = (assetsParam) => {
@@ -251,6 +258,60 @@ const AssetHoldings = () => {
     setTimeRange(value);
   };
 
+  // 6. 打开交易模态框
+  const handleTradeModalOpen = (type, crypto = '') => {
+    setTradeType(type);
+    setSelectedCrypto(crypto);
+    tradeForm.resetFields();
+    setTradeModalVisible(true);
+  };
+
+  // 7. 关闭交易模态框
+  const handleTradeModalClose = () => {
+    setTradeModalVisible(false);
+    setSelectedCrypto('');
+    tradeForm.resetFields();
+  };
+
+  // 8. 处理交易提交
+  const handleTradeSubmit = async (values) => {
+    try {
+      const { cryptoType, amount } = values;
+      
+      // 模拟交易处理 - 在实际项目中，这里应该调用API进行真实交易
+      // 暂时使用模拟数据验证
+      if (!cryptoType) {
+        message.error('请选择加密货币');
+        return;
+      }
+      
+      if (amount <= 0) {
+        message.error('交易数量必须大于0');
+        return;
+      }
+      
+      // 模拟交易成功
+      // 在实际项目中，这里应该调用API进行交易操作
+      console.log(`执行${tradeType === 'buy' ? '购买' : '卖出'}操作：${amount} ${cryptoType}`);
+      
+      // 模拟API延迟
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // 显示成功消息
+      message.success(`${tradeType === 'buy' ? '购买' : '卖出'}成功：${amount} ${cryptoType}`);
+      
+      // 关闭模态框
+      handleTradeModalClose();
+      
+      // 重新获取持仓数据
+      fetchCurrentHoldings();
+      
+    } catch (error) {
+      message.error('交易失败，请稍后重试');
+      console.error('交易失败:', error);
+    }
+  };
+
   return (
     <div className="asset-holdings-page" style={{ padding: '40px 24px 24px' }}>
       {/* 页面标题栏（含筛选+导出） */}
@@ -338,7 +399,29 @@ const AssetHoldings = () => {
 
         {/* 2. 历史持仓折线图 */}
         <Col xs={24}>
-          <Card title={`${timeRange === '7days' ? '近7日' : '近30日'}持仓占比变化`} variant="outlined">
+          <Card 
+            title={`${timeRange === '7days' ? '近7日' : '近30日'}持仓占比变化`} 
+            variant="outlined"
+            extra={
+              <Space size="small">
+                <Button 
+                  type="primary" 
+                  icon={<PlusOutlined />}
+                  onClick={() => handleTradeModalOpen('buy')}
+                >
+                  购买
+                </Button>
+                <Button 
+                  type="primary" 
+                  danger
+                  icon={<MinusOutlined />}
+                  onClick={() => handleTradeModalOpen('sell')}
+                >
+                  卖出
+                </Button>
+              </Space>
+            }
+          >
             {historyHoldings.length > 0 ? (
               <ResponsiveContainer width="100%" height={450}>
                 <LineChart
@@ -483,6 +566,60 @@ const AssetHoldings = () => {
           </Card>
         </Col>
       </Row>
+      {/* 交易模态框 */}
+      <Modal
+        title={`${tradeType === 'buy' ? '购买' : '卖出'}加密货币`}
+        open={tradeModalVisible}
+        onCancel={handleTradeModalClose}
+        footer={null}
+        width={500}
+      >
+        <Form
+          form={tradeForm}
+          layout="vertical"
+          onFinish={handleTradeSubmit}
+          initialValues={{ cryptoType: selectedCrypto, amount: 0 }}
+        >
+          <Form.Item
+            name="cryptoType"
+            label="加密货币类型"
+            rules={[{ required: true, message: '请选择加密货币类型' }]}
+          >
+            <Select placeholder="选择加密货币">
+              {currentHoldings.map(asset => (
+                <Option key={asset.name} value={asset.name}>
+                  {asset.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="amount"
+            label={`${tradeType === 'buy' ? '购买' : '卖出'}数量`}
+            rules={[{ required: true, message: `请输入${tradeType === 'buy' ? '购买' : '卖出'}数量` }]}
+          >
+            <InputNumber
+              min={0.000001}
+              step={0.000001}
+              style={{ width: '100%' }}
+              placeholder={`请输入${tradeType === 'buy' ? '购买' : '卖出'}数量`}
+              onChange={(value) => setTradeAmount(value || 0)}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
+              <Button onClick={handleTradeModalClose}>
+                取消
+              </Button>
+              <Button type="primary" htmlType="submit" danger={tradeType === 'sell'}>
+                {tradeType === 'buy' ? '确认购买' : '确认卖出'}
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

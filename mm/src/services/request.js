@@ -53,6 +53,17 @@ request.interceptors.response.use(
     const errorMsg = error.response?.data?.message || error.response?.data || '服务器异常，请联系管理员';
     message.error(errorMsg);
     console.error('网络请求错误：', error);
+    // 添加更详细的错误日志
+    console.error('错误配置：', error.config);
+    if (error.response) {
+      console.error('响应状态：', error.response.status);
+      console.error('响应头：', error.response.headers);
+      console.error('响应数据：', error.response.data);
+    } else if (error.request) {
+      console.error('请求数据：', error.request);
+    } else {
+      console.error('错误信息：', error.message);
+    }
     return Promise.reject(error);
   }
 );

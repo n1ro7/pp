@@ -3,7 +3,14 @@ import request from './request';
 // 获取用户列表（支持搜索和分页）
 export const getUsers = async (params = {}) => {
   try {
-    const response = await request.get('/admin/users', { params });
+    // 过滤掉空值参数
+    const filteredParams = {};
+    for (const key in params) {
+      if (params[key] !== '' && params[key] !== undefined && params[key] !== null) {
+        filteredParams[key] = params[key];
+      }
+    }
+    const response = await request.get('/admin/users', { params: filteredParams });
     return response;
   } catch (error) {
     console.error('获取用户列表失败:', error);
